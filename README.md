@@ -1,4 +1,4 @@
-# SinkerGLWallPaper
+# HellSinkerGLWallPaper
 
 HellSinkerのメニュー画面、`GRAVEYARD`をAndroidのライブ壁紙として再現するアプリ
 
