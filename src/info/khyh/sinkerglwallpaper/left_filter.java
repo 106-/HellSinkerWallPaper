@@ -14,26 +14,26 @@ public class left_filter extends graveyard{
 	public void Draw(GL10 gl) {
 		int[] col = SinkerService.col;
 		gl.glColor4f((float)(col[0]/100.0),(float)(col[1]/100.0),(float)(col[2]/100.0),(float)(col[3]/100.0));
-		//’¸“_‚ğ—LŒø‰»
+		//é ‚ç‚¹ã‚’æœ‰åŠ¹åŒ–
 		gl.glVertexPointer(2, GL10.GL_FLOAT, 0, ab);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		switch(SinkerService.blend_type)
 		{
-		//‰ÁZ
+		//åŠ ç®—
 		case 0:gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE);break;
-		//æZ
+		//ä¹—ç®—
 		case 1:gl.glBlendFunc(GL10.GL_ZERO, GL10.GL_SRC_COLOR);break;
-		//ƒAƒ‹ƒtƒ@
+		//ã‚¢ãƒ«ãƒ•ã‚¡
 		case 2:gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);break;
-		//”r‘¼“I˜_—˜a
+		//æ’ä»–çš„è«–ç†å’Œ
 		case 3:gl.glBlendFunc(GL10.GL_ONE_MINUS_DST_COLOR, GL10.GL_ONE_MINUS_SRC_COLOR);break;
 		}
 		
 		gl.glEnable(GL10.GL_BLEND);
-		//’¸“_‚Ì•`‰æ
+		//é ‚ç‚¹ã®æç”»
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		//–³Œø‰»
+		//ç„¡åŠ¹åŒ–
 	   	gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisable(GL10.GL_BLEND);
 	   	gl.glColor4f(1, 1, 1, 1);

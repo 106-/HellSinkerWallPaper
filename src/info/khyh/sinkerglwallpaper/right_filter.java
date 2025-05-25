@@ -14,18 +14,18 @@ public class right_filter extends graveyard {
 	public void Draw(GL10 gl) {
 		//gl.glColor4f(1f,0.554f,0.18f,0.5f);
 		gl.glColor4f(1f,0.5f,0.5f,0.5f);
-		//’¸“_‚ğ—LŒø‰»
+		//é ‚ç‚¹ã‚’æœ‰åŠ¹åŒ–
 		gl.glVertexPointer(2, GL10.GL_FLOAT, 0, ab);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		//OpenGL‚ğ2Dƒ‚[ƒh‚É
+		//OpenGLã‚’2Dãƒ¢ãƒ¼ãƒ‰ã«
 		//gl.glEnable(GL10.GL_TEXTURE_2D);
-		//”½“]‚ğ—LŒø‚É‚·‚é
+		//åè»¢ã‚’æœ‰åŠ¹ã«ã™ã‚‹
 		gl.glBlendFunc(GL10.GL_ONE_MINUS_DST_COLOR, GL10.GL_ZERO);
 		//gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 		gl.glEnable(GL10.GL_BLEND);
-		//’¸“_‚Ì•`‰æ
+		//é ‚ç‚¹ã®æç”»
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		//–³Œø‰»
+		//ç„¡åŠ¹åŒ–
 	   	//gl.glDisable(GL10.GL_TEXTURE_2D);
 	   	gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisable(GL10.GL_BLEND);

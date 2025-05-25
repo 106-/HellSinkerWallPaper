@@ -18,37 +18,37 @@ public class center_gy extends graveyard {
 	public void Draw(GL10 gl) {
 		cnt++;
 		if(cnt == 2881)cnt = 0;
-		//À•WŒn‚Ì•Û‘¶
+		//åº§æ¨™ç³»ã®ä¿å­˜
 		gl.glPushMatrix();
-		//‰ñ“]
+		//å›è»¢
 		gl.glRotatef(-0.125f*cnt, 0.0f, 0.0f, 1.0f);
-		//’¸“_‚ğ—LŒø‰»
+		//é ‚ç‚¹ã‚’æœ‰åŠ¹åŒ–
 		gl.glVertexPointer(2, GL10.GL_FLOAT, 0, ab);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		//’¸“_‚ÉƒeƒNƒXƒ`ƒƒ‚ğ•t‚¯‚é
+		//é ‚ç‚¹ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ä»˜ã‘ã‚‹
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, SinkerService.textures[0]);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, cb);
-		//OpenGL‚ğ2Dƒ‚[ƒh‚É
+		//OpenGLã‚’2Dãƒ¢ãƒ¼ãƒ‰ã«
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		//‰ÁZ‡¬‚ğ—LŒø‚É‚·‚é
+		//åŠ ç®—åˆæˆã‚’æœ‰åŠ¹ã«ã™ã‚‹
 		gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE);
 		gl.glEnable(GL10.GL_BLEND);
-		//’¸“_‚Ì•`‰æ
+		//é ‚ç‚¹ã®æç”»
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		//–³Œø‰»
+		//ç„¡åŠ¹åŒ–
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	   	gl.glDisable(GL10.GL_TEXTURE_2D);
 	   	gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisable(GL10.GL_BLEND);
 		
-	   	//•Û‘¶“à—e‚Ì•œŒ³
+	   	//ä¿å­˜å†…å®¹ã®å¾©å…ƒ
 	   	gl.glPopMatrix();
 	}
 
 	@Override
 	public void Update(GL10 gl) {
-		// TODO ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhEƒXƒ^ƒu
+		// TODO è‡ªå‹•ç”Ÿæˆã•ã‚ŒãŸãƒ¡ã‚½ãƒƒãƒ‰ãƒ»ã‚¹ã‚¿ãƒ–
 		
 	}
 

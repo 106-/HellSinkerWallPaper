@@ -51,7 +51,7 @@ public class SinkerService extends GLWallpaperService{
 		
 		@Override
 		public void onDrawFrame(GL10 gl) {			
-			//��ʂ�����
+			//画面を消す
 			gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			bgy.Draw(gl);
 			cgy.Draw(gl);
@@ -116,7 +116,7 @@ public class SinkerService extends GLWallpaperService{
 			bm.recycle();
 			bm_rev.recycle();
 			
-			//�w�i�F
+			//背景色
 			gl.glClearColor(0, 0, 0, 0);
 		}
 	}
@@ -128,7 +128,7 @@ public class SinkerService extends GLWallpaperService{
 		return new SinkerEngine();
 	}
 	
-	//���_�̔z����o�b�t�@�[�ɕϊ����郁�\�b�h
+	//頂点の配列をバッファーに変換するメソッド
 	 public static FloatBuffer makeFloatBuffer(float[] values) {
 	  ByteBuffer bb = ByteBuffer.allocateDirect(values.length * 4);
 	  bb.order(ByteOrder.nativeOrder());
