@@ -79,3 +79,39 @@ Thumbs.db
 
 # NDK
 obj/
+
+# Gradle wrapper
+gradle-wrapper.jar
+gradle-wrapper.properties
+gradlew
+gradlew.bat
+
+# Android Gradle plugin generated files
+.gradle/wrapper/
+gradle/wrapper/dists/
+
+# Temporary files and caches
+*.tmp
+*.temp
+.externalNativeBuild/
+.cxx/
+*.hprof
+
+# ProGuard
+proguard/
+mapping.txt
+
+# Android Studio 3+ generated files
+.externalNativeBuild/
+.cxx/
+
+# Kotlin
+*.kt~
+.kotlin/
+
+# AAR files (Android Archive)
+*.aar
+
+# Resource shrinking files
+shrinkDebugRes/
+shrinkReleaseRes/
