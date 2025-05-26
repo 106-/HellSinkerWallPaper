@@ -2,6 +2,8 @@
 
 [HellSinker](https://store.steampowered.com/app/1067720/Hellsinker/)のメニュー画面、`A THING LEFT BEHIND`をAndroidのライブ壁紙として再現するアプリ
 
+**ダウンロード**: [app-release.apk](https://github.com/106-/HellSinkerWallPaper/releases/download/v0.0.1/app-release.apk)
+
 ```
 所詮 他愛ない模倣か……
 ```
