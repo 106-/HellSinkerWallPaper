@@ -32,6 +32,7 @@ public class size_change_pref extends DialogPreference {
 	@Override
 	protected void onBindDialogView(View v)
 	{
+		super.onBindDialogView(v);
 		tv = (TextView)v.findViewById(id.textView2);
 		sb = (SeekBar)v.findViewById(id.seekBar1);
 		btn = (Button)v.findViewById(id.button1);

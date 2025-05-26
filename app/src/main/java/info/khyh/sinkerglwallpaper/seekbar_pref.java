@@ -36,6 +36,7 @@ public class seekbar_pref extends DialogPreference{
 	@Override
 	protected void onBindDialogView(View v)
 	{
+		super.onBindDialogView(v);
 		tv[0] = (TextView)v.findViewById(R.id.textView1);
 		tv[1] = (TextView)v.findViewById(R.id.textView2);
 		tv[2] = (TextView)v.findViewById(R.id.textView3);
