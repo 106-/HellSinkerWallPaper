@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="34" />
+
+    <uses-feature android:name="android.software.live_wallpaper"
+        android:required="true"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/nyan"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <service
+            android:name="net.t106.sinkerglwallpaper.SinkerService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category android:name="android.intent.category.LIVE_WALLPAPER"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/wallpaper" >
+            </meta-data>
+        </service>
+
+        <activity
+            android:name="net.t106.sinkerglwallpaper.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:exported="true">
+            <intent-filter>
+         		<action android:name="android.intent.action.MAIN" >
+                </action>
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

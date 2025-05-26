@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wallpaper
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:name ="@string/name"
     android:thumbnail="@drawable/nyan"
     android:description="@string/reference"
-    android:settingsActivity="info.khyh.sinkerglwallpaper.SettingsActivity"
+    android:settingsActivity="net.t106.sinkerglwallpaper.SettingsActivity"
 />

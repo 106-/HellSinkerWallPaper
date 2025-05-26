@@ -1,6 +1,6 @@
-package info.khyh.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper;
 
-import info.khyh.sinkerglwallpaper.R.id;
+import net.t106.sinkerglwallpaper.R.id;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,6 +32,7 @@ public class size_change_pref extends DialogPreference {
 	@Override
 	protected void onBindDialogView(View v)
 	{
+		super.onBindDialogView(v);
 		tv = (TextView)v.findViewById(id.textView2);
 		sb = (SeekBar)v.findViewById(id.seekBar1);
 		btn = (Button)v.findViewById(id.button1);
