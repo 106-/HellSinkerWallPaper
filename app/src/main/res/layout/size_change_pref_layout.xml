@@ -12,15 +12,15 @@
             android:id="@+id/seekBar1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/textView2" />
+            android:layout_toStartOf="@+id/textView2" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="TextView" />
+            android:text="@string/color_value_placeholder" />
 
     </RelativeLayout>
 
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="値が大きいほど小さくなります" />
+            android:text="@string/size_description" />
 
     </RelativeLayout>
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="デフォルトに戻す" />
+            android:text="@string/reset_to_default" />
 
     </RelativeLayout>
 

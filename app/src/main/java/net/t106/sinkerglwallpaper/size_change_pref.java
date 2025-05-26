@@ -7,6 +7,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import java.util.Locale;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,7 +40,7 @@ public class size_change_pref extends DialogPreference {
 		sb.setMax(300);
 		sb.setProgress(prog);
 		sb.setOnSeekBarChangeListener(new SBchange());
-		tv.setText(String.format("%.2f", (prog+100)/100.0));
+		tv.setText(String.format(Locale.US, "%.2f", (prog+100)/100.0));
 		btn.setOnClickListener(new btnlis());
 	}
 	
@@ -52,14 +53,14 @@ public class size_change_pref extends DialogPreference {
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
 			Editor e = sp.edit();
 			e.putInt("size", prog);
-			e.commit();
+			e.apply();
 		}
 		else
 		{
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
 			Editor e = sp.edit();
 			e.putInt("size", tmp_prog);
-			e.commit();
+			e.apply();
 		}
 	}
 	
@@ -67,7 +68,7 @@ public class size_change_pref extends DialogPreference {
 	{
 		sb.setProgress(200);
 		prog = 200;
-		tv.setText(String.format("%.2f", (200+100)/100.0));
+		tv.setText(String.format(Locale.US, "%.2f", (200+100)/100.0));
 	}
 	
 	private class SBchange implements SeekBar.OnSeekBarChangeListener
@@ -75,7 +76,7 @@ public class size_change_pref extends DialogPreference {
 		@Override
 		public void onProgressChanged(SeekBar skbar, int val, boolean flg) 
 		{
-			tv.setText(String.format("%.2f", (val+100)/100.0));
+			tv.setText(String.format(Locale.US, "%.2f", (val+100)/100.0));
 			prog = val;
 		}
 

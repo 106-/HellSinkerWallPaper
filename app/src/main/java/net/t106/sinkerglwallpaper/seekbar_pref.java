@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import java.util.Locale;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -29,7 +30,7 @@ public class seekbar_pref extends DialogPreference{
 		col[1] = sp.getInt("col_G", 50);
 		col[2] = sp.getInt("col_B", 100);
 		col[3] = sp.getInt("col_Alpha", 50);
-		col_tmp = (int[])col.clone();
+		col_tmp = col.clone();
 		setDialogLayoutResource(R.layout.pref_seekbar_pref);
 	}
 	
@@ -50,7 +51,7 @@ public class seekbar_pref extends DialogPreference{
 		SBchange sbc = new SBchange(sb,tv);
 		for(int i=0;i<4;i++)sb[i].setProgress(col[i]);
 		for(int i=0;i<4;i++)sb[i].setOnSeekBarChangeListener(sbc);
-		for(int i=0;i<4;i++)tv[i].setText(String.format("%.2f", col[i]/100.0));
+		for(int i=0;i<4;i++)tv[i].setText(String.format(Locale.US, "%.2f", col[i]/100.0));
 	}
 	
 	@Override
@@ -65,18 +66,18 @@ public class seekbar_pref extends DialogPreference{
 			e.putInt("col_G", col[1]);
 			e.putInt("col_B", col[2]);
 			e.putInt("col_Alpha", col[3]);
-			e.commit();
+			e.apply();
 		}
 		else
 		{
-			col = (int[])col_tmp.clone();
+			col = col_tmp.clone();
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
 			Editor e = sp.edit();
 			e.putInt("col_R", col[0]);
 			e.putInt("col_G", col[1]);
 			e.putInt("col_B", col[2]);
 			e.putInt("col_Alpha", col[3]);
-			e.commit();
+			e.apply();
 		}
 	}
 	
@@ -87,9 +88,9 @@ public class seekbar_pref extends DialogPreference{
 	
 	protected void setDefault()
 	{
-		col = (int[])col_default.clone();
+		col = col_default.clone();
 		for(int i=0;i<4;i++)sb[i].setProgress(col[i]);
-		for(int i=0;i<4;i++)tv[i].setText(String.format("%.2f", col[i]/100.0));
+		for(int i=0;i<4;i++)tv[i].setText(String.format(Locale.US, "%.2f", col[i]/100.0));
 	}
 	
 	private class SBchange implements SeekBar.OnSeekBarChangeListener
@@ -110,7 +111,7 @@ public class seekbar_pref extends DialogPreference{
 				if(sb_arr[i].getId() == id)
 				{
 					setColor(i, val);
-					tv[i].setText(String.format("%.2f", val/100.0));
+					tv[i].setText(String.format(Locale.US, "%.2f", val/100.0));
 				}
 		}
 		
