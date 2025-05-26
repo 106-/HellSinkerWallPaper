@@ -1,4 +1,4 @@
-package info.khyh.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper;
 
 import android.content.Context;
 import android.preference.DialogPreference;

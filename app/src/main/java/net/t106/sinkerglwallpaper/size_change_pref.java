@@ -1,6 +1,6 @@
-package info.khyh.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper;
 
-import info.khyh.sinkerglwallpaper.R.id;
+import net.t106.sinkerglwallpaper.R.id;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

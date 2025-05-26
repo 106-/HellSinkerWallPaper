@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'info.khyh.sinkerglwallpaper'
+    namespace 'net.t106.sinkerglwallpaper'
     compileSdk 34
 
     defaultConfig {
-        applicationId "info.khyh.sinkerglwallpaper"
+        applicationId "net.t106.sinkerglwallpaper"
         minSdk 21
         targetSdk 34
         versionCode 2

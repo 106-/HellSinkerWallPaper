@@ -4,5 +4,5 @@
     android:name ="@string/name"
     android:thumbnail="@drawable/nyan"
     android:description="@string/reference"
-    android:settingsActivity="info.khyh.sinkerglwallpaper.SettingsActivity"
+    android:settingsActivity="net.t106.sinkerglwallpaper.SettingsActivity"
 />

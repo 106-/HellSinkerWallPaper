@@ -1,4 +1,4 @@
-package info.khyh.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper;
 import javax.microedition.khronos.opengles.GL10;
 
 public class left_filter extends graveyard{
