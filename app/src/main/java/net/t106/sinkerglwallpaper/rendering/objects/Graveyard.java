@@ -43,8 +43,16 @@ public abstract class Graveyard {
 	 * Must be called after OpenGL context is created
 	 */
 	public void initGL() {
+		android.util.Log.d("Graveyard", getClass().getSimpleName() + " initGL() started");
+		
 		// Create shader program
 		createShaderProgram();
+		android.util.Log.d("Graveyard", getClass().getSimpleName() + " shader program: " + shaderProgram);
+		
+		if (shaderProgram == 0) {
+			android.util.Log.e("Graveyard", getClass().getSimpleName() + " failed to create shader program!");
+			return;
+		}
 		
 		// Get uniform locations
 		mvpMatrixLocation = ShaderUtils.getUniformLocation(shaderProgram, "u_mvpMatrix");
@@ -52,8 +60,14 @@ public abstract class Graveyard {
 		colorLocation = ShaderUtils.getUniformLocation(shaderProgram, "u_color");
 		blendModeLocation = ShaderUtils.getUniformLocation(shaderProgram, "u_blendMode");
 		
+		android.util.Log.d("Graveyard", getClass().getSimpleName() + " uniform locations: mvp=" + mvpMatrixLocation + 
+			", texture=" + textureLocation + ", color=" + colorLocation + ", blend=" + blendModeLocation);
+		
 		// Create VAO and VBOs
 		createBuffers();
+		android.util.Log.d("Graveyard", getClass().getSimpleName() + " VAO: " + vao);
+		
+		android.util.Log.d("Graveyard", getClass().getSimpleName() + " initGL() completed");
 	}
 	
 	/**

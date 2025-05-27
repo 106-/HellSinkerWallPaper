@@ -38,6 +38,8 @@ public class CenterGraveyard extends Graveyard {
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+		android.util.Log.d("CenterGraveyard", "Draw() called");
+		
 		// Debug: Check if shader and texture are valid
 		if (shaderProgram == 0) {
 			android.util.Log.e("CenterGraveyard", "Shader program is 0!");
