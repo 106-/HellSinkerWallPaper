@@ -31,8 +31,9 @@ void main() {
     
     // Apply different blend modes
     if (u_blendMode == BLEND_ADD) {
-        // Additive blending: add colors together
-        finalColor = clamp(texColor + blendColor, 0.0, 1.0);
+        // Additive blending: multiply texture with color first, then add in framebuffer
+        finalColor.rgb = texColor.rgb * blendColor.rgb;
+        finalColor.a = texColor.a * blendColor.a;
         
     } else if (u_blendMode == BLEND_MULTIPLY) {
         // Multiplicative blending: multiply colors
