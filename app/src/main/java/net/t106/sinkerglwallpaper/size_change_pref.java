@@ -4,8 +4,8 @@ import net.t106.sinkerglwallpaper.R.id;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.preference.DialogPreference;
-import android.preference.PreferenceManager;
+import androidx.preference.DialogPreference;
+import androidx.preference.PreferenceManager;
 import android.util.AttributeSet;
 import java.util.Locale;
 import android.view.View;
@@ -30,10 +30,8 @@ public class size_change_pref extends DialogPreference {
 		setDialogLayoutResource(R.layout.size_change_pref_layout);
 	}
 	
-	@Override
-	protected void onBindDialogView(View v)
+	public void onBindDialogView(View v)
 	{
-		super.onBindDialogView(v);
 		tv = (TextView)v.findViewById(id.textView2);
 		sb = (SeekBar)v.findViewById(id.seekBar1);
 		btn = (Button)v.findViewById(id.button1);
@@ -44,10 +42,8 @@ public class size_change_pref extends DialogPreference {
 		btn.setOnClickListener(new btnlis());
 	}
 	
-	@Override
-	protected void onDialogClosed(boolean res) 
+	public void onDialogClosed(boolean res) 
 	{
-		super.onDialogClosed(res);
 		if(res)
 		{
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);

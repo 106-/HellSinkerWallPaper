@@ -14,7 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 

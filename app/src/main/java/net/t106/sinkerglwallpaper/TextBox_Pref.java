@@ -1,7 +1,7 @@
 package net.t106.sinkerglwallpaper;
 
 import android.content.Context;
-import android.preference.DialogPreference;
+import androidx.preference.DialogPreference;
 import android.util.AttributeSet;
 
 public class TextBox_Pref extends DialogPreference{
@@ -9,6 +9,12 @@ public class TextBox_Pref extends DialogPreference{
 	public TextBox_Pref(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setDialogLayoutResource(R.layout.textboxpref);
+	}
+	
+	public void onBindDialogView(android.view.View view) {
+	}
+	
+	public void onDialogClosed(boolean positiveResult) {
 	}
 
 }
