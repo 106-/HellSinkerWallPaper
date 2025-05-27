@@ -86,11 +86,11 @@ public class SinkerService extends GLWallpaperServiceES32{
 			lf.Update(deltaTime);
 			rf.Update(deltaTime);
 			
-			// Draw objects - they should handle their own state properly
+			// Draw objects - filters first, then graveyards
+			rf.Draw(viewMatrix, projectionMatrix);
+			lf.Draw(viewMatrix, projectionMatrix);
 			bgy.Draw(viewMatrix, projectionMatrix);
 			cgy.Draw(viewMatrix, projectionMatrix);
-			lf.Draw(viewMatrix, projectionMatrix);
-			rf.Draw(viewMatrix, projectionMatrix);
 		}
 		
 		private void resetOpenGLState() {
