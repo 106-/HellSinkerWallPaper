@@ -29,20 +29,20 @@ public class LeftFilter extends Graveyard {
 	
 	@Override
 	protected void createShaderProgram() {
-		// Use blend shader program for customizable blending
-		shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
+		// Use color shader program for color-only rendering
+		shaderProgram = ShaderLoader.Programs.createColorProgram(SinkerService.getContext());
 	}
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+		android.util.Log.d("LeftFilter", "Draw() called, blend_type=" + SinkerService.blend_type + 
+			", col=[" + SinkerService.col[0] + "," + SinkerService.col[1] + "," + SinkerService.col[2] + "," + SinkerService.col[3] + "]");
+		
 		// Update MVP matrix (no rotation, just basic transformation)
 		updateMVP(viewMatrix, projectionMatrix);
 		
 		// Bind shader and set uniforms
 		bindShader();
-		
-		// No texture binding needed for color-only rendering
-		ShaderUtils.setUniform1i(textureLocation, 0);
 		
 		// Set blend mode from user settings
 		ShaderUtils.setUniform1i(blendModeLocation, SinkerService.blend_type);
