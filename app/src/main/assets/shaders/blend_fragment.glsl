@@ -36,8 +36,8 @@ void main() {
         finalColor = texColor * blendColor;
         
     } else if (u_blendMode == BLEND_ALPHA) {
-        // Alpha blending: combine texture and color properly
-        finalColor.rgb = mix(texColor.rgb, blendColor.rgb, blendColor.a);
+        // Alpha blending: preserve texture transparency
+        finalColor.rgb = texColor.rgb * blendColor.rgb;
         finalColor.a = texColor.a * blendColor.a;
         
     } else if (u_blendMode == BLEND_XOR) {
@@ -53,7 +53,12 @@ void main() {
         finalColor = texColor * blendColor;
     }
     
-    // Ensure alpha is reasonable
+    // Discard completely transparent pixels from texture
+    if (texColor.a < 0.01) {
+        discard;
+    }
+    
+    // Also discard if final alpha is too low
     if (finalColor.a < 0.01) {
         discard;
     }

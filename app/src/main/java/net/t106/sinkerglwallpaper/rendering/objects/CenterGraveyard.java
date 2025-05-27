@@ -66,8 +66,8 @@ public class CenterGraveyard extends Graveyard {
 		// Set blend mode to alpha (2) for transparency
 		ShaderUtils.setUniform1i(blendModeLocation, 2);
 		
-		// Set color with transparency (red with 50% alpha)
-		ShaderUtils.setUniform4f(colorLocation, 1.0f, 0.0f, 0.0f, 0.5f);
+		// Set color (white to show texture as-is, with transparency)
+		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 		
 		// Use normal alpha blending for transparency
 		GLES32.glEnable(GLES32.GL_BLEND);
