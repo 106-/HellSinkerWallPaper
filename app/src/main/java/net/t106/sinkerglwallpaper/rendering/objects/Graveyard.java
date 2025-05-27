@@ -1,13 +1,18 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.objects;
 
 import java.nio.FloatBuffer;
 import android.opengl.GLES32;
+import net.t106.sinkerglwallpaper.opengl.utils.MatrixUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
+import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
 
 /**
  * Abstract base class for OpenGL ES 3.2 rendering objects
  * Migrated from OpenGL ES 1.0 fixed pipeline to modern programmable pipeline
  */
-public abstract class graveyard {
+public abstract class Graveyard {
 	protected float apex[], coords[];
 	protected FloatBuffer ab, cb;
 	protected int cnt;
@@ -28,7 +33,7 @@ public abstract class graveyard {
 	protected float[] modelMatrix;
 	protected float[] mvpMatrix;
 	
-	public graveyard() {
+	public Graveyard() {
 		modelMatrix = MatrixUtils.identity();
 		mvpMatrix = new float[16];
 	}

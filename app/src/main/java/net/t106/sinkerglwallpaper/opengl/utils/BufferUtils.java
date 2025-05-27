@@ -1,4 +1,4 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.opengl.utils;
 
 import android.opengl.GLES32;
 import java.nio.ByteBuffer;

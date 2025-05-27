@@ -1,8 +1,12 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.ui.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
+import net.t106.sinkerglwallpaper.R;
+import net.t106.sinkerglwallpaper.ui.preferences.TextBoxPreference;
+import net.t106.sinkerglwallpaper.ui.preferences.SeekBarPreference;
+import net.t106.sinkerglwallpaper.ui.preferences.SizeChangePreference;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -26,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
 		
 		@Override
 		public void onDisplayPreferenceDialog(androidx.preference.Preference preference) {
-			if (preference instanceof TextBox_Pref) {
+			if (preference instanceof TextBoxPreference) {
 				androidx.preference.PreferenceDialogFragmentCompat dialogFragment = 
 					new TextBoxPreferenceDialogFragmentCompat();
 				Bundle bundle = new Bundle();
@@ -34,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
 				dialogFragment.setArguments(bundle);
 				dialogFragment.setTargetFragment(this, 0);
 				dialogFragment.show(getParentFragmentManager(), "androidx.preference.PreferenceFragment.DIALOG");
-			} else if (preference instanceof seekbar_pref) {
+			} else if (preference instanceof SeekBarPreference) {
 				androidx.preference.PreferenceDialogFragmentCompat dialogFragment = 
 					new SeekBarPreferenceDialogFragmentCompat();
 				Bundle bundle = new Bundle();
@@ -42,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
 				dialogFragment.setArguments(bundle);
 				dialogFragment.setTargetFragment(this, 0);
 				dialogFragment.show(getParentFragmentManager(), "androidx.preference.PreferenceFragment.DIALOG");
-			} else if (preference instanceof size_change_pref) {
+			} else if (preference instanceof SizeChangePreference) {
 				androidx.preference.PreferenceDialogFragmentCompat dialogFragment = 
 					new SizeChangePreferenceDialogFragmentCompat();
 				Bundle bundle = new Bundle();
@@ -60,13 +64,13 @@ public class SettingsActivity extends AppCompatActivity {
 		@Override
 		protected void onBindDialogView(android.view.View view) {
 			super.onBindDialogView(view);
-			TextBox_Pref preference = (TextBox_Pref) getPreference();
+			TextBoxPreference preference = (TextBoxPreference) getPreference();
 			preference.onBindDialogView(view);
 		}
 		
 		@Override
 		public void onDialogClosed(boolean positiveResult) {
-			TextBox_Pref preference = (TextBox_Pref) getPreference();
+			TextBoxPreference preference = (TextBoxPreference) getPreference();
 			preference.onDialogClosed(positiveResult);
 		}
 	}
@@ -75,13 +79,13 @@ public class SettingsActivity extends AppCompatActivity {
 		@Override
 		protected void onBindDialogView(android.view.View view) {
 			super.onBindDialogView(view);
-			seekbar_pref preference = (seekbar_pref) getPreference();
+			SeekBarPreference preference = (SeekBarPreference) getPreference();
 			preference.onBindDialogView(view);
 		}
 		
 		@Override
 		public void onDialogClosed(boolean positiveResult) {
-			seekbar_pref preference = (seekbar_pref) getPreference();
+			SeekBarPreference preference = (SeekBarPreference) getPreference();
 			preference.onDialogClosed(positiveResult);
 		}
 	}
@@ -90,13 +94,13 @@ public class SettingsActivity extends AppCompatActivity {
 		@Override
 		protected void onBindDialogView(android.view.View view) {
 			super.onBindDialogView(view);
-			size_change_pref preference = (size_change_pref) getPreference();
+			SizeChangePreference preference = (SizeChangePreference) getPreference();
 			preference.onBindDialogView(view);
 		}
 		
 		@Override
 		public void onDialogClosed(boolean positiveResult) {
-			size_change_pref preference = (size_change_pref) getPreference();
+			SizeChangePreference preference = (SizeChangePreference) getPreference();
 			preference.onDialogClosed(positiveResult);
 		}
 	}

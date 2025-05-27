@@ -4,7 +4,7 @@
 
 大昔(2013年頃?)に某所で配布していたものを最近の環境でコンパイルし直したものになります。どこかしら不具合があるかも。
 
-**ダウンロード**: [app-release.apk](https://github.com/106-/HellSinkerWallPaper/releases/download/v0.0.1/app-release.apk)
+**ダウンロード**: [app-release.apk](https://github.com/106-/HellSinkerWallPaper/releases/download/v0.0.2/app-release.apk)
 
 ```
 所詮 他愛ない模倣か……

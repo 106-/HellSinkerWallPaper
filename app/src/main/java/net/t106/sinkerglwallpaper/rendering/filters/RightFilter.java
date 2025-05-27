@@ -1,11 +1,16 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.filters;
 import android.opengl.GLES32;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
+import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.objects.Graveyard;
 
 /**
  * Right side filter for OpenGL ES 3.2
  * Renders a vertical colored strip on the right side with invert blend mode
  */
-public class right_filter extends graveyard {
+public class RightFilter extends Graveyard {
 
 	private boolean isSmallSize = false;
 	
@@ -15,7 +20,7 @@ public class right_filter extends graveyard {
 	private static final float BLUE = 0.5f;
 	private static final float ALPHA = 0.5f;
 
-	public right_filter()
+	public RightFilter()
 	{
 		super();
 		// Right side vertical strip (default size)

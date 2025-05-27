@@ -1,15 +1,20 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.filters;
 import android.opengl.GLES32;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
+import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.objects.Graveyard;
 
 /**
  * Left filter for OpenGL ES 3.2
  * Renders a customizable colored overlay with user-selectable blend modes
  */
-public class left_filter extends graveyard{
+public class LeftFilter extends Graveyard {
 
 	private boolean isSmallSize = false;
 
-	public left_filter()
+	public LeftFilter()
 	{
 		super();
 		// Center overlay covering most of the screen
