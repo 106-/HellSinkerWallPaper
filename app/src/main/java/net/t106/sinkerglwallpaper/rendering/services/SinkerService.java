@@ -69,6 +69,9 @@ public class SinkerService extends GLWallpaperServiceES32{
 		
 		@Override
 		public void onDrawFrame(javax.microedition.khronos.opengles.GL10 gl) {			
+			// Reset OpenGL state to known values
+			resetOpenGLState();
+			
 			// Clear screen
 			GLES32.glClear(GLES32.GL_COLOR_BUFFER_BIT);
 			
@@ -83,11 +86,60 @@ public class SinkerService extends GLWallpaperServiceES32{
 			lf.Update(deltaTime);
 			rf.Update(deltaTime);
 			
-			// Draw objects
-			bgy.Draw(viewMatrix, projectionMatrix);
-			cgy.Draw(viewMatrix, projectionMatrix);
-			lf.Draw(viewMatrix, projectionMatrix);
-			rf.Draw(viewMatrix, projectionMatrix);
+			// Draw objects with state isolation
+			drawWithStateIsolation(() -> bgy.Draw(viewMatrix, projectionMatrix));
+			drawWithStateIsolation(() -> cgy.Draw(viewMatrix, projectionMatrix));
+			drawWithStateIsolation(() -> lf.Draw(viewMatrix, projectionMatrix));
+			drawWithStateIsolation(() -> rf.Draw(viewMatrix, projectionMatrix));
+		}
+		
+		private void resetOpenGLState() {
+			// Reset common OpenGL states to default values
+			GLES32.glUseProgram(0);
+			GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0);
+			GLES32.glBindBuffer(GLES32.GL_ARRAY_BUFFER, 0);
+			GLES32.glBindBuffer(GLES32.GL_ELEMENT_ARRAY_BUFFER, 0);
+			GLES32.glDisable(GLES32.GL_BLEND);
+			GLES32.glDisable(GLES32.GL_DEPTH_TEST);
+			GLES32.glDisable(GLES32.GL_CULL_FACE);
+			
+			// Reset vertex attribute arrays
+			for (int i = 0; i < 8; i++) {
+				GLES32.glDisableVertexAttribArray(i);
+			}
+		}
+		
+		private void drawWithStateIsolation(Runnable drawCommand) {
+			// Save current OpenGL state (basic approach)
+			int[] currentProgram = new int[1];
+			int[] currentTexture = new int[1];
+			int[] currentArrayBuffer = new int[1];
+			boolean blendEnabled = GLES32.glIsEnabled(GLES32.GL_BLEND);
+			
+			GLES32.glGetIntegerv(GLES32.GL_CURRENT_PROGRAM, currentProgram, 0);
+			GLES32.glGetIntegerv(GLES32.GL_TEXTURE_BINDING_2D, currentTexture, 0);
+			GLES32.glGetIntegerv(GLES32.GL_ARRAY_BUFFER_BINDING, currentArrayBuffer, 0);
+			
+			try {
+				// Execute draw command
+				drawCommand.run();
+			} finally {
+				// Restore OpenGL state
+				GLES32.glUseProgram(currentProgram[0]);
+				GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, currentTexture[0]);
+				GLES32.glBindBuffer(GLES32.GL_ARRAY_BUFFER, currentArrayBuffer[0]);
+				
+				if (blendEnabled) {
+					GLES32.glEnable(GLES32.GL_BLEND);
+				} else {
+					GLES32.glDisable(GLES32.GL_BLEND);
+				}
+				
+				// Reset vertex attribute arrays again
+				for (int i = 0; i < 8; i++) {
+					GLES32.glDisableVertexAttribArray(i);
+				}
+			}
 		}
 		@Override
 		public void onSurfaceChanged(javax.microedition.khronos.opengles.GL10 gl, int wid, int hei) {
