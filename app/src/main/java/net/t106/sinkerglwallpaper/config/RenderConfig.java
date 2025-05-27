@@ -1,4 +1,6 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.config;
+
+import net.t106.sinkerglwallpaper.config.BlendModeManager;
 
 /**
  * Configuration classes for data-driven rendering

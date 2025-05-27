@@ -1,8 +1,9 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.opengl.shaders;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

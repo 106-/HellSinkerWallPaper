@@ -1,4 +1,4 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.ui.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,8 +12,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import net.t106.sinkerglwallpaper.R;
 
-public class seekbar_pref extends DialogPreference{
+public class SeekBarPreference extends DialogPreference{
 	private TextView[] tv = new TextView[4];
 	private SeekBar[] sb = new SeekBar[4];
 	private Button btn;
@@ -22,7 +23,7 @@ public class seekbar_pref extends DialogPreference{
 	private int[] col_tmp = new int[4];
 	private int[] col_default = {50,50,100,50};
 
-	public seekbar_pref(Context context, AttributeSet attrs) {
+	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		cxt = context;
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);

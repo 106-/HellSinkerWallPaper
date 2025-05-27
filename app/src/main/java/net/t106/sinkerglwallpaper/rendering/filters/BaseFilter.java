@@ -1,12 +1,19 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.filters;
 
 import android.opengl.GLES32;
+import net.t106.sinkerglwallpaper.config.RenderConfig;
+import net.t106.sinkerglwallpaper.config.BlendModeManager;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
+import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.objects.Graveyard;
 
 /**
  * Base class for all filter objects
- * Eliminates code duplication between left_filter and right_filter
+ * Eliminates code duplication between LeftFilter and RightFilter
  */
-public abstract class BaseFilter extends graveyard {
+public abstract class BaseFilter extends Graveyard {
     
     protected RenderConfig.ColorConfig colorConfig;
     protected RenderConfig.GeometryConfig geometryConfig;

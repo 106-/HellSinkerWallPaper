@@ -1,6 +1,6 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.ui.preferences;
 
-import net.t106.sinkerglwallpaper.R.id;
+import net.t106.sinkerglwallpaper.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -14,14 +14,14 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class size_change_pref extends DialogPreference {
+public class SizeChangePreference extends DialogPreference {
 	private Context cxt;
 	private SeekBar sb;
 	private TextView tv;
 	private Button btn;
 	private int prog,tmp_prog;
 	
-	public size_change_pref(Context context, AttributeSet attrs) {
+	public SizeChangePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		cxt = context;
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
@@ -32,9 +32,9 @@ public class size_change_pref extends DialogPreference {
 	
 	public void onBindDialogView(View v)
 	{
-		tv = (TextView)v.findViewById(id.textView2);
-		sb = (SeekBar)v.findViewById(id.seekBar1);
-		btn = (Button)v.findViewById(id.button1);
+		tv = (TextView)v.findViewById(R.id.textView2);
+		sb = (SeekBar)v.findViewById(R.id.seekBar1);
+		btn = (Button)v.findViewById(R.id.button1);
 		sb.setMax(300);
 		sb.setProgress(prog);
 		sb.setOnSeekBarChangeListener(new SBchange());

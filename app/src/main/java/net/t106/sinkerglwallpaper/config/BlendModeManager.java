@@ -1,4 +1,4 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.config;
 
 import android.opengl.GLES32;
 

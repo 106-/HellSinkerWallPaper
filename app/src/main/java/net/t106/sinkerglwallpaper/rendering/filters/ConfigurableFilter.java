@@ -1,7 +1,11 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.filters;
+
+import net.t106.sinkerglwallpaper.config.RenderConfig;
+import net.t106.sinkerglwallpaper.config.BlendModeManager;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
 
 /**
- * Configurable filter class - replaces left_filter.java
+ * Configurable filter class - replaces LeftFilter.java
  * Supports user-customizable colors and blend modes
  */
 public class ConfigurableFilter extends BaseFilter {

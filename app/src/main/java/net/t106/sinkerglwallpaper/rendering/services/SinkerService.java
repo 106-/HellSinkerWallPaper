@@ -1,4 +1,4 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.services;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -14,6 +14,13 @@ import android.opengl.GLUtils;
 import androidx.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 import net.rbgrn.android.glwallpaperservice.GLWallpaperServiceES32;
+import net.t106.sinkerglwallpaper.R;
+import net.t106.sinkerglwallpaper.rendering.objects.CenterGraveyard;
+import net.t106.sinkerglwallpaper.rendering.objects.BackgroundGraveyard;
+import net.t106.sinkerglwallpaper.rendering.filters.LeftFilter;
+import net.t106.sinkerglwallpaper.rendering.filters.RightFilter;
+import net.t106.sinkerglwallpaper.opengl.utils.MatrixUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
 
 public class SinkerService extends GLWallpaperServiceES32{
 	public static int[] textures = new int[2];
@@ -38,10 +45,10 @@ public class SinkerService extends GLWallpaperServiceES32{
 	}
 	
 	public class MyRenderer implements GLWallpaperServiceES32.Renderer {
-		private center_gy cgy;
-		private back_gy bgy;
-		private right_filter rf;
-		private left_filter lf;
+		private CenterGraveyard cgy;
+		private BackgroundGraveyard bgy;
+		private RightFilter rf;
+		private LeftFilter lf;
 		
 		// OpenGL ES 3.2 matrices
 		private float[] projectionMatrix;
@@ -50,10 +57,10 @@ public class SinkerService extends GLWallpaperServiceES32{
 		
 		public MyRenderer()
 		{   
-			cgy = new center_gy();
-			bgy = new back_gy();
-			rf = new right_filter();
-			lf = new left_filter();
+			cgy = new CenterGraveyard();
+			bgy = new BackgroundGraveyard();
+			rf = new RightFilter();
+			lf = new LeftFilter();
 			
 			projectionMatrix = new float[16];
 			viewMatrix = new float[16];

@@ -1,12 +1,20 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.objects;
 
 import android.opengl.GLES32;
+import net.t106.sinkerglwallpaper.config.RenderConfig;
+import net.t106.sinkerglwallpaper.config.BlendModeManager;
+import net.t106.sinkerglwallpaper.opengl.utils.MatrixUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
+import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
 
 /**
  * Unified rotating graveyard object for OpenGL ES 3.2
- * Replaces both center_gy and back_gy with configuration-driven behavior
+ * Replaces both CenterGraveyard and BackgroundGraveyard with configuration-driven behavior
  */
-public class RotatingGraveyard extends graveyard {
+public class RotatingGraveyard extends Graveyard {
     
     private final RenderConfig.CompleteConfig config;
     private float rotation = 0.0f;

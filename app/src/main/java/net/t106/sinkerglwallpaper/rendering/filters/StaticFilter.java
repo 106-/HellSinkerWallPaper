@@ -1,7 +1,10 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.filters;
+
+import net.t106.sinkerglwallpaper.config.RenderConfig;
+import net.t106.sinkerglwallpaper.config.BlendModeManager;
 
 /**
- * Static filter class - replaces right_filter.java
+ * Static filter class - replaces RightFilter.java
  * Provides a fixed-color vertical strip with invert blending
  */
 public class StaticFilter extends BaseFilter {

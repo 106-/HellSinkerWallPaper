@@ -1,41 +1,41 @@
-package net.t106.sinkerglwallpaper;
+package net.t106.sinkerglwallpaper.rendering.objects;
 
 import android.opengl.GLES32;
+import net.t106.sinkerglwallpaper.opengl.utils.MatrixUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
+import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
+import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
+import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
 
 /**
- * Background rotating graveyard object for OpenGL ES 3.2
- * Larger than center_gy and rotates in opposite direction with color tint
+ * Center rotating graveyard object for OpenGL ES 3.2
+ * Migrated from OpenGL ES 1.0 fixed pipeline
  */
-public class back_gy extends graveyard {
-	
+public class CenterGraveyard extends Graveyard {
+
 	private float rotation = 0.0f;
-	private static final float ROTATION_SPEED = 0.125f;  // Positive rotation (opposite to center)
-	private static final int MAX_COUNT = 2880;
-	
-	// Color tint for background
-	private static final float RED = 0.375f;
-	private static final float GREEN = 0.04f;
-	private static final float BLUE = 0.09f;
-	private static final float ALPHA = 0.5f;
-	
-	public back_gy()
+	private static final float ROTATION_SPEED = -0.125f;
+	private static final int MAX_COUNT = 2881;
+
+	public CenterGraveyard()
 	{
 		super();
-		// Larger quad vertices (1.5x scale compared to center_gy)
-		apex = new float[] { -1.5f, -1.5f, 1.5f, -1.5f, -1.5f, 1.5f, 1.5f, 1.5f, };
+		// Define quad vertices (same as original)
+		apex = new float[] { -1f, -1f, 1f, -1f, -1f, 1f, 1f, 1f, };
 		coords = new float[] {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };
 		
 		// Keep legacy buffer creation for compatibility
 		ab = SinkerService.makeFloatBuffer(apex);
 		cb = SinkerService.makeFloatBuffer(coords);
 	}
-
+	
 	@Override
 	protected void createShaderProgram() {
-		// Use blend shader program for additive blending with color tint
+		// Use blend shader program for additive blending
 		shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
 	}
-
+	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
 		// Update MVP matrix with current rotation
@@ -44,14 +44,14 @@ public class back_gy extends graveyard {
 		// Bind shader and set uniforms
 		bindShader();
 		
-		// Set texture (using flipped texture)
-		TextureUtils.bindTexture(0, SinkerService.textures[1]);
+		// Set texture
+		TextureUtils.bindTexture(0, SinkerService.textures[0]);
 		
 		// Set blend mode to additive (0)
 		ShaderUtils.setUniform1i(blendModeLocation, 0);
 		
-		// Set color tint (reddish-brown tint)
-		ShaderUtils.setUniform4f(colorLocation, RED, GREEN, BLUE, ALPHA);
+		// Set color (white for no tinting)
+		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 		
 		// Enable blending for additive effect
 		GLES32.glEnable(GLES32.GL_BLEND);
@@ -75,7 +75,7 @@ public class back_gy extends graveyard {
 		cnt++;
 		if(cnt >= MAX_COUNT) cnt = 0;
 		
-		// Calculate rotation angle (positive direction)
+		// Calculate rotation angle
 		rotation = ROTATION_SPEED * cnt;
 		
 		// Update model matrix with rotation
