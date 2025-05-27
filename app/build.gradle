@@ -41,12 +41,12 @@ dependencies {
     implementation files('libs/GLWallpaperService.jar')
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    
-    configurations.all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.jetbrains.kotlin' && details.requested.name.startsWith('kotlin-stdlib-jdk')) {
-                details.useTarget group: details.requested.group, name: 'kotlin-stdlib', version: details.requested.version
-            }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'org.jetbrains.kotlin' && details.requested.name.startsWith('kotlin-stdlib-jdk')) {
+            details.useTarget group: details.requested.group, name: 'kotlin-stdlib', version: details.requested.version
         }
     }
 }
