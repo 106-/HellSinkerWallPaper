@@ -26,6 +26,9 @@ void main() {
     vec4 blendColor = u_color;
     vec4 finalColor;
     
+    // Calculate luminance to detect dark areas (for black background transparency)
+    float luminance = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+    
     // Apply different blend modes
     if (u_blendMode == BLEND_ADD) {
         // Additive blending: add colors together
@@ -53,7 +56,12 @@ void main() {
         finalColor = texColor * blendColor;
     }
     
-    // Discard completely transparent pixels from texture
+    // Discard dark pixels (black background) to create transparency
+    if (luminance < 0.1) {
+        discard;
+    }
+    
+    // Discard completely transparent pixels from texture alpha
     if (texColor.a < 0.01) {
         discard;
     }
