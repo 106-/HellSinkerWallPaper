@@ -182,6 +182,9 @@ public class SinkerService extends GLWallpaperServiceES32{
 			if (newTextures != null) {
 				textures[0] = newTextures[0]; // Original texture
 				textures[1] = newTextures[1]; // Flipped texture
+				android.util.Log.d("SinkerService", "Textures loaded: " + textures[0] + ", " + textures[1]);
+			} else {
+				android.util.Log.e("SinkerService", "Failed to load textures!");
 			}
 			
 			// Set background color

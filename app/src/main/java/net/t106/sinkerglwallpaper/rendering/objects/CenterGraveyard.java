@@ -38,6 +38,20 @@ public class CenterGraveyard extends Graveyard {
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+		// Debug: Check if shader and texture are valid
+		if (shaderProgram == 0) {
+			android.util.Log.e("CenterGraveyard", "Shader program is 0!");
+			return;
+		}
+		if (SinkerService.textures[0] == 0) {
+			android.util.Log.e("CenterGraveyard", "Texture is 0!");
+			return;
+		}
+		if (vao == 0) {
+			android.util.Log.e("CenterGraveyard", "VAO is 0!");
+			return;
+		}
+		
 		// Update MVP matrix with current rotation
 		updateMVP(viewMatrix, projectionMatrix);
 		
