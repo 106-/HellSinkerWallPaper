@@ -38,8 +38,11 @@ public class right_filter extends graveyard {
 	@Override
 	public void sizechange(boolean smollflg)
 	{
-		if(smollflg)ab = SinkerService.makeFloatBuffer(new float[] { 0f, -1.5f, 0.5f, -1.5f, 0f, 1.5f, 0.5f, 1.5f, });
-		else ab = SinkerService.makeFloatBuffer(new float[] { 0f, -1.5f, 0.7f, -1.5f, 0f, 1.5f, 0.7f, 1.5f, });
+		if(smollflg) {
+			ab = SinkerService.makeFloatBuffer(new float[] { 0f, -1.5f, 0.5f, -1.5f, 0f, 1.5f, 0.5f, 1.5f, });
+		} else {
+			ab = SinkerService.makeFloatBuffer(new float[] { 0f, -1.5f, 0.7f, -1.5f, 0f, 1.5f, 0.7f, 1.5f, });
+		}
 	}
 
 }
