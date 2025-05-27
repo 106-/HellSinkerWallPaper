@@ -44,19 +44,19 @@ public class LeftFilter extends Graveyard {
 		// Bind shader and set uniforms
 		bindShader();
 		
-		// Set blend mode to fixed additive (0)
-		ShaderUtils.setUniform1i(blendModeLocation, 0);
+		// Set blend mode to fixed multiplicative (1)
+		ShaderUtils.setUniform1i(blendModeLocation, 1);
 		
-		// Set fixed blue-purple color like old.png
-		float red = 0.3f;   // Less red
-		float green = 0.4f; // Some green  
-		float blue = 1.0f;  // Full blue for blue-purple color
-		float alpha = 0.6f; // Moderate transparency
+		// Set original color (0.5, 0.5, 1.0, 0.5)
+		float red = 0.5f;   
+		float green = 0.5f;   
+		float blue = 1.0f;  
+		float alpha = 0.5f; 
 		ShaderUtils.setUniform4f(colorLocation, red, green, blue, alpha);
 		
-		// Enable additive blending (fixed)
+		// Enable fixed multiplicative blending
 		GLES32.glEnable(GLES32.GL_BLEND);
-		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
+		GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
 		
 		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
