@@ -86,23 +86,21 @@ public class SinkerService extends GLWallpaperServiceES32{
 			lf.Update(deltaTime);
 			rf.Update(deltaTime);
 			
-			// Draw objects with state isolation
-			drawWithStateIsolation(() -> bgy.Draw(viewMatrix, projectionMatrix));
-			drawWithStateIsolation(() -> cgy.Draw(viewMatrix, projectionMatrix));
-			drawWithStateIsolation(() -> lf.Draw(viewMatrix, projectionMatrix));
-			drawWithStateIsolation(() -> rf.Draw(viewMatrix, projectionMatrix));
+			// Draw objects - they should handle their own state properly
+			bgy.Draw(viewMatrix, projectionMatrix);
+			cgy.Draw(viewMatrix, projectionMatrix);
+			lf.Draw(viewMatrix, projectionMatrix);
+			rf.Draw(viewMatrix, projectionMatrix);
 		}
 		
 		private void resetOpenGLState() {
-			// Reset common OpenGL states to default values
+			// Reset only binding states, not capabilities that objects need to control
 			GLES32.glUseProgram(0);
 			GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0);
 			GLES32.glBindBuffer(GLES32.GL_ARRAY_BUFFER, 0);
 			GLES32.glBindBuffer(GLES32.GL_ELEMENT_ARRAY_BUFFER, 0);
-			GLES32.glDisable(GLES32.GL_BLEND);
-			GLES32.glDisable(GLES32.GL_DEPTH_TEST);
-			GLES32.glDisable(GLES32.GL_CULL_FACE);
 			
+			// Don't reset blend, depth test, or cull face as objects may need them
 			// Reset vertex attribute arrays
 			for (int i = 0; i < 8; i++) {
 				GLES32.glDisableVertexAttribArray(i);
@@ -110,11 +108,10 @@ public class SinkerService extends GLWallpaperServiceES32{
 		}
 		
 		private void drawWithStateIsolation(Runnable drawCommand) {
-			// Save current OpenGL state (basic approach)
+			// Save current OpenGL binding state (not capabilities)
 			int[] currentProgram = new int[1];
 			int[] currentTexture = new int[1];
 			int[] currentArrayBuffer = new int[1];
-			boolean blendEnabled = GLES32.glIsEnabled(GLES32.GL_BLEND);
 			
 			GLES32.glGetIntegerv(GLES32.GL_CURRENT_PROGRAM, currentProgram, 0);
 			GLES32.glGetIntegerv(GLES32.GL_TEXTURE_BINDING_2D, currentTexture, 0);
@@ -124,18 +121,12 @@ public class SinkerService extends GLWallpaperServiceES32{
 				// Execute draw command
 				drawCommand.run();
 			} finally {
-				// Restore OpenGL state
+				// Restore only binding states, let objects control their own capabilities
 				GLES32.glUseProgram(currentProgram[0]);
 				GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, currentTexture[0]);
 				GLES32.glBindBuffer(GLES32.GL_ARRAY_BUFFER, currentArrayBuffer[0]);
 				
-				if (blendEnabled) {
-					GLES32.glEnable(GLES32.GL_BLEND);
-				} else {
-					GLES32.glDisable(GLES32.GL_BLEND);
-				}
-				
-				// Reset vertex attribute arrays again
+				// Reset vertex attribute arrays
 				for (int i = 0; i < 8; i++) {
 					GLES32.glDisableVertexAttribArray(i);
 				}
