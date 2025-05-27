@@ -34,10 +34,8 @@ public class seekbar_pref extends DialogPreference{
 		setDialogLayoutResource(R.layout.pref_seekbar_pref);
 	}
 	
-	@Override
-	protected void onBindDialogView(View v)
+	public void onBindDialogView(View v)
 	{
-		super.onBindDialogView(v);
 		tv[0] = (TextView)v.findViewById(R.id.textView1);
 		tv[1] = (TextView)v.findViewById(R.id.textView2);
 		tv[2] = (TextView)v.findViewById(R.id.textView3);
@@ -54,10 +52,8 @@ public class seekbar_pref extends DialogPreference{
 		for(int i=0;i<4;i++)tv[i].setText(String.format(Locale.US, "%.2f", col[i]/100.0));
 	}
 	
-	@Override
-	protected void onDialogClosed(boolean res) 
+	public void onDialogClosed(boolean res) 
 	{
-		super.onDialogClosed(res);
 		if(res)
 		{
 			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
