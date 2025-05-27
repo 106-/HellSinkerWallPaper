@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <ListPreference android:title="合成方法の選択" android:key="blend_type" android:defaultValue="mul" android:entryValues="@array/blend_type_value" android:entries="@array/blend_type"/>
-   	<net.t106.sinkerglwallpaper.seekbar_pref android:title="色の設定"/>
+   	<net.t106.sinkerglwallpaper.seekbar_pref android:title="色の設定" android:key="seekbar_pref"/>
    	<ListPreference android:title="フィルターの大きさ" android:key="filter_size" android:defaultValue="vert" android:entryValues="@array/filter_size_value" android:entries="@array/filter_size"/>
-   	<net.t106.sinkerglwallpaper.size_change_pref android:title="ガーランドの大きさ" />
-   	<net.t106.sinkerglwallpaper.TextBox_Pref android:title="概要と手引き"/>
+   	<net.t106.sinkerglwallpaper.size_change_pref android:title="ガーランドの大きさ" android:key="size_change_pref"/>
+   	<net.t106.sinkerglwallpaper.TextBox_Pref android:title="概要と手引き" android:key="textbox_pref"/>
 </PreferenceScreen>

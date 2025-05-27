@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
 			if (preference instanceof TextBox_Pref) {
 				androidx.preference.PreferenceDialogFragmentCompat dialogFragment = 
 					new TextBoxPreferenceDialogFragmentCompat();
-				Bundle bundle = new Bundle(1);
+				Bundle bundle = new Bundle();
 				bundle.putString("key", preference.getKey());
 				dialogFragment.setArguments(bundle);
 				dialogFragment.setTargetFragment(this, 0);
@@ -37,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
 			} else if (preference instanceof seekbar_pref) {
 				androidx.preference.PreferenceDialogFragmentCompat dialogFragment = 
 					new SeekBarPreferenceDialogFragmentCompat();
-				Bundle bundle = new Bundle(1);
+				Bundle bundle = new Bundle();
 				bundle.putString("key", preference.getKey());
 				dialogFragment.setArguments(bundle);
 				dialogFragment.setTargetFragment(this, 0);
@@ -45,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
 			} else if (preference instanceof size_change_pref) {
 				androidx.preference.PreferenceDialogFragmentCompat dialogFragment = 
 					new SizeChangePreferenceDialogFragmentCompat();
-				Bundle bundle = new Bundle(1);
+				Bundle bundle = new Bundle();
 				bundle.putString("key", preference.getKey());
 				dialogFragment.setArguments(bundle);
 				dialogFragment.setTargetFragment(this, 0);
