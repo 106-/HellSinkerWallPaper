@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <service
-            android:name="net.t106.sinkerglwallpaper.SinkerService"
+            android:name="net.t106.sinkerglwallpaper.rendering.services.SinkerService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_WALLPAPER"
             android:exported="true">
@@ -27,7 +27,7 @@
         </service>
 
         <activity
-            android:name="net.t106.sinkerglwallpaper.SettingsActivity"
+            android:name="net.t106.sinkerglwallpaper.ui.activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:exported="false">
             <intent-filter>
