@@ -17,8 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/textView1"
-            android:layout_weight="1" />
+            android:layout_toStartOf="@+id/textView1" />
 
         <TextView
             android:id="@+id/textView1"
@@ -64,8 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/textView3"
-            android:layout_weight="0.15" />
+            android:layout_toStartOf="@+id/textView3" />
 
         <TextView
             android:id="@+id/textView3"
