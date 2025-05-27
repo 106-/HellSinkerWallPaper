@@ -44,42 +44,19 @@ public class LeftFilter extends Graveyard {
 		// Bind shader and set uniforms
 		bindShader();
 		
-		// Set blend mode from user settings
-		ShaderUtils.setUniform1i(blendModeLocation, SinkerService.blend_type);
+		// Set blend mode to fixed additive (0)
+		ShaderUtils.setUniform1i(blendModeLocation, 0);
 		
-		// Set color from user settings (convert from 0-100 range to 0.0-1.0)
-		int[] col = SinkerService.col;
-		float red = col[0] / 100.0f;
-		float green = col[1] / 100.0f;
-		float blue = col[2] / 100.0f;
-		float alpha = col[3] / 100.0f;
+		// Set fixed blue-purple color like old.png
+		float red = 0.3f;   // Less red
+		float green = 0.4f; // Some green  
+		float blue = 1.0f;  // Full blue for blue-purple color
+		float alpha = 0.6f; // Moderate transparency
 		ShaderUtils.setUniform4f(colorLocation, red, green, blue, alpha);
 		
-		// Enable blending with mode based on user settings
+		// Enable additive blending (fixed)
 		GLES32.glEnable(GLES32.GL_BLEND);
-		
-		switch(SinkerService.blend_type)
-		{
-		// Additive
-		case 0:
-			GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
-			break;
-		// Multiplicative  
-		case 1:
-			GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
-			break;
-		// Alpha
-		case 2:
-			GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE);
-			break;
-		// XOR (Exclusive OR)
-		case 3:
-			GLES32.glBlendFunc(GLES32.GL_ONE_MINUS_DST_COLOR, GLES32.GL_ONE_MINUS_SRC_COLOR);
-			break;
-		default:
-			GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
-			break;
-		}
+		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
 		
 		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
