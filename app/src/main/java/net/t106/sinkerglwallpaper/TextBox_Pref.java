@@ -1,7 +1,7 @@
 package net.t106.sinkerglwallpaper;
 
 import android.content.Context;
-import android.preference.DialogPreference;
+import androidx.preference.DialogPreference;
 import android.util.AttributeSet;
 
 public class TextBox_Pref extends DialogPreference{
