@@ -40,7 +40,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * GLWallpaperService adapted for OpenGL ES 3.2 core profile.
  */
-public class GLWallpaperService extends WallpaperService {
+public class GLWallpaperServiceES32 extends WallpaperService {
     private static final String TAG = "GLWallpaperService";
 
     @Override
@@ -286,10 +286,529 @@ public class GLWallpaperService extends WallpaperService {
         }
     }
 
+    @Deprecated
+    interface GLWrapper extends GLSurfaceView.GLWrapper {
+    }
+
     /* ------------------------------------------------------------------ */
-    /* Remaining helper classes (GLThread, EglHelper, etc.) are identical */
-    /* to the original implementation except for very small comments.     */
-    /* They have been omitted here for brevity but **remain unchanged**    */
-    /* and continue to compile against the new context factory above.     */
+    /* EGL helper class                                                    */
+
+    static class EglHelper {
+        private EGL10 mEgl;
+        private EGLDisplay mEglDisplay;
+        private EGLSurface mEglSurface;
+        private EGLContext mEglContext;
+        EGLConfig mEglConfig;
+
+        private GLSurfaceView.EGLConfigChooser mEGLConfigChooser;
+        private GLSurfaceView.EGLContextFactory mEGLContextFactory;
+        private GLSurfaceView.EGLWindowSurfaceFactory mEGLWindowSurfaceFactory;
+        private GLSurfaceView.GLWrapper mGLWrapper;
+
+        public EglHelper(GLSurfaceView.EGLConfigChooser chooser, GLSurfaceView.EGLContextFactory contextFactory,
+                         GLSurfaceView.EGLWindowSurfaceFactory surfaceFactory, GLSurfaceView.GLWrapper wrapper) {
+            this.mEGLConfigChooser = chooser;
+            this.mEGLContextFactory = contextFactory;
+            this.mEGLWindowSurfaceFactory = surfaceFactory;
+            this.mGLWrapper = wrapper;
+        }
+
+        public void start() {
+            if (mEgl == null) {
+                mEgl = (EGL10) EGLContext.getEGL();
+            }
+
+            if (mEglDisplay == null) {
+                mEglDisplay = mEgl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+            }
+
+            if (mEglConfig == null) {
+                int[] version = new int[2];
+                mEgl.eglInitialize(mEglDisplay, version);
+                mEglConfig = mEGLConfigChooser.chooseConfig(mEgl, mEglDisplay);
+            }
+
+            if (mEglContext == null) {
+                mEglContext = mEGLContextFactory.createContext(mEgl, mEglDisplay, mEglConfig);
+                if (mEglContext == null || mEglContext == EGL10.EGL_NO_CONTEXT) {
+                    throw new RuntimeException("createContext failed");
+                }
+            }
+
+            mEglSurface = null;
+        }
+
+        public GL createSurface(SurfaceHolder holder) {
+            if (mEglSurface != null && mEglSurface != EGL10.EGL_NO_SURFACE) {
+                mEgl.eglMakeCurrent(mEglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
+                mEGLWindowSurfaceFactory.destroySurface(mEgl, mEglDisplay, mEglSurface);
+            }
+
+            mEglSurface = mEGLWindowSurfaceFactory.createWindowSurface(mEgl, mEglDisplay, mEglConfig, holder);
+
+            if (mEglSurface == null || mEglSurface == EGL10.EGL_NO_SURFACE) {
+                throw new RuntimeException("createWindowSurface failed");
+            }
+
+            if (!mEgl.eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
+                throw new RuntimeException("eglMakeCurrent failed.");
+            }
+
+            GL gl = mEglContext.getGL();
+            if (mGLWrapper != null) {
+                gl = mGLWrapper.wrap(gl);
+            }
+
+            return gl;
+        }
+
+        public boolean swap() {
+            mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);
+            return mEgl.eglGetError() != EGL11.EGL_CONTEXT_LOST;
+        }
+
+        public void destroySurface() {
+            if (mEglSurface != null && mEglSurface != EGL10.EGL_NO_SURFACE) {
+                mEgl.eglMakeCurrent(mEglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
+                mEGLWindowSurfaceFactory.destroySurface(mEgl, mEglDisplay, mEglSurface);
+                mEglSurface = null;
+            }
+        }
+
+        public void finish() {
+            if (mEglContext != null) {
+                mEGLContextFactory.destroyContext(mEgl, mEglDisplay, mEglContext);
+                mEglContext = null;
+            }
+            if (mEglDisplay != null) {
+                mEgl.eglTerminate(mEglDisplay);
+                mEglDisplay = null;
+            }
+        }
+    }
+
     /* ------------------------------------------------------------------ */
+    /* GL Thread implementation                                            */
+
+    static class GLThread extends Thread {
+        private final static boolean LOG_THREADS = false;
+        public final static int DEBUG_CHECK_GL_ERROR = 1;
+        public final static int DEBUG_LOG_GL_CALLS = 2;
+
+        private final GLThreadManager sGLThreadManager = new GLThreadManager();
+        private GLThread mEglOwner;
+
+        private GLSurfaceView.EGLConfigChooser mEGLConfigChooser;
+        private GLSurfaceView.EGLContextFactory mEGLContextFactory;
+        private GLSurfaceView.EGLWindowSurfaceFactory mEGLWindowSurfaceFactory;
+        private GLSurfaceView.GLWrapper mGLWrapper;
+
+        public SurfaceHolder mHolder;
+        private boolean mSizeChanged = true;
+
+        public boolean mDone;
+        private boolean mPaused;
+        private boolean mHasSurface;
+        private boolean mWaitingForSurface;
+        private boolean mHaveEgl;
+        private int mWidth;
+        private int mHeight;
+        private int mRenderMode;
+        private boolean mRequestRender;
+        private boolean mEventsWaiting;
+
+        private GLSurfaceView.Renderer mRenderer;
+        private ArrayList<Runnable> mEventQueue = new ArrayList<Runnable>();
+        private EglHelper mEglHelper;
+
+        GLThread(GLSurfaceView.Renderer renderer, GLSurfaceView.EGLConfigChooser chooser, GLSurfaceView.EGLContextFactory contextFactory,
+                 GLSurfaceView.EGLWindowSurfaceFactory surfaceFactory, GLSurfaceView.GLWrapper wrapper) {
+            super();
+            mDone = false;
+            mWidth = 0;
+            mHeight = 0;
+            mRequestRender = true;
+            mRenderMode = GLWallpaperServiceES32.GLEngine.RENDERMODE_CONTINUOUSLY;
+            mRenderer = renderer;
+            this.mEGLConfigChooser = chooser;
+            this.mEGLContextFactory = contextFactory;
+            this.mEGLWindowSurfaceFactory = surfaceFactory;
+            this.mGLWrapper = wrapper;
+        }
+
+        @Override
+        public void run() {
+            setName("GLThread " + getId());
+            if (LOG_THREADS) {
+                Log.i("GLThread", "starting tid=" + getId());
+            }
+
+            try {
+                guardedRun();
+            } catch (InterruptedException e) {
+                // fall thru and exit normally
+            } finally {
+                sGLThreadManager.threadExiting(this);
+            }
+        }
+
+        private void stopEglLocked() {
+            if (mHaveEgl) {
+                mHaveEgl = false;
+                mEglHelper.destroySurface();
+                sGLThreadManager.releaseEglSurface(this);
+            }
+        }
+
+        private void guardedRun() throws InterruptedException {
+            mEglHelper = new EglHelper(mEGLConfigChooser, mEGLContextFactory, mEGLWindowSurfaceFactory, mGLWrapper);
+            try {
+                GL10 gl = null;
+                boolean tellRendererSurfaceCreated = true;
+                boolean tellRendererSurfaceChanged = true;
+
+                while (!isDone()) {
+                    int w = 0;
+                    int h = 0;
+                    boolean changed = false;
+                    boolean needStart = false;
+                    boolean eventsWaiting = false;
+
+                    synchronized (sGLThreadManager) {
+                        while (true) {
+                            if (mPaused) {
+                                stopEglLocked();
+                            }
+                            if (!mHasSurface) {
+                                if (!mWaitingForSurface) {
+                                    stopEglLocked();
+                                    mWaitingForSurface = true;
+                                    sGLThreadManager.notifyAll();
+                                }
+                            } else {
+                                if (!mHaveEgl) {
+                                    if (sGLThreadManager.tryAcquireEglSurface(this)) {
+                                        mHaveEgl = true;
+                                        mEglHelper.start();
+                                        mRequestRender = true;
+                                        needStart = true;
+                                    }
+                                }
+                            }
+
+                            if (mDone) {
+                                return;
+                            }
+
+                            if (mEventsWaiting) {
+                                eventsWaiting = true;
+                                mEventsWaiting = false;
+                                break;
+                            }
+
+                            if ((!mPaused) && mHasSurface && mHaveEgl && (mWidth > 0) && (mHeight > 0)
+                                    && (mRequestRender || (mRenderMode == GLWallpaperServiceES32.GLEngine.RENDERMODE_CONTINUOUSLY))) {
+                                changed = mSizeChanged;
+                                w = mWidth;
+                                h = mHeight;
+                                mSizeChanged = false;
+                                mRequestRender = false;
+                                if (mHasSurface && mWaitingForSurface) {
+                                    changed = true;
+                                    mWaitingForSurface = false;
+                                    sGLThreadManager.notifyAll();
+                                }
+                                break;
+                            }
+
+                            if (LOG_THREADS) {
+                                Log.i("GLThread", "waiting tid=" + getId());
+                            }
+                            sGLThreadManager.wait();
+                        }
+                    }
+
+                    if (eventsWaiting) {
+                        Runnable r;
+                        while ((r = getEvent()) != null) {
+                            r.run();
+                            if (isDone()) {
+                                return;
+                            }
+                        }
+                        continue;
+                    }
+
+                    if (needStart) {
+                        tellRendererSurfaceCreated = true;
+                        changed = true;
+                    }
+                    if (changed) {
+                        gl = (GL10) mEglHelper.createSurface(mHolder);
+                        tellRendererSurfaceChanged = true;
+                    }
+                    if (tellRendererSurfaceCreated) {
+                        mRenderer.onSurfaceCreated(gl, mEglHelper.mEglConfig);
+                        tellRendererSurfaceCreated = false;
+                    }
+                    if (tellRendererSurfaceChanged) {
+                        mRenderer.onSurfaceChanged(gl, w, h);
+                        tellRendererSurfaceChanged = false;
+                    }
+                    if ((w > 0) && (h > 0)) {
+                        mRenderer.onDrawFrame(gl);
+                        mEglHelper.swap();
+                        Thread.sleep(10);
+                    }
+                }
+            } finally {
+                synchronized (sGLThreadManager) {
+                    stopEglLocked();
+                    mEglHelper.finish();
+                }
+            }
+        }
+
+        private boolean isDone() {
+            synchronized (sGLThreadManager) {
+                return mDone;
+            }
+        }
+
+        public void setRenderMode(int renderMode) {
+            if (!((GLWallpaperServiceES32.GLEngine.RENDERMODE_WHEN_DIRTY <= renderMode) && (renderMode <= GLWallpaperServiceES32.GLEngine.RENDERMODE_CONTINUOUSLY))) {
+                throw new IllegalArgumentException("renderMode");
+            }
+            synchronized (sGLThreadManager) {
+                mRenderMode = renderMode;
+                if (renderMode == GLWallpaperServiceES32.GLEngine.RENDERMODE_CONTINUOUSLY) {
+                    sGLThreadManager.notifyAll();
+                }
+            }
+        }
+
+        public int getRenderMode() {
+            synchronized (sGLThreadManager) {
+                return mRenderMode;
+            }
+        }
+
+        public void requestRender() {
+            synchronized (sGLThreadManager) {
+                mRequestRender = true;
+                sGLThreadManager.notifyAll();
+            }
+        }
+
+        public void surfaceCreated(SurfaceHolder holder) {
+            mHolder = holder;
+            synchronized (sGLThreadManager) {
+                if (LOG_THREADS) {
+                    Log.i("GLThread", "surfaceCreated tid=" + getId());
+                }
+                mHasSurface = true;
+                sGLThreadManager.notifyAll();
+            }
+        }
+
+        public void surfaceDestroyed() {
+            synchronized (sGLThreadManager) {
+                if (LOG_THREADS) {
+                    Log.i("GLThread", "surfaceDestroyed tid=" + getId());
+                }
+                mHasSurface = false;
+                sGLThreadManager.notifyAll();
+                while (!mWaitingForSurface && isAlive() && !mDone) {
+                    try {
+                        sGLThreadManager.wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        }
+
+        public void onPause() {
+            synchronized (sGLThreadManager) {
+                mPaused = true;
+                sGLThreadManager.notifyAll();
+            }
+        }
+
+        public void onResume() {
+            synchronized (sGLThreadManager) {
+                mPaused = false;
+                mRequestRender = true;
+                sGLThreadManager.notifyAll();
+            }
+        }
+
+        public void onWindowResize(int w, int h) {
+            synchronized (sGLThreadManager) {
+                mWidth = w;
+                mHeight = h;
+                mSizeChanged = true;
+                sGLThreadManager.notifyAll();
+            }
+        }
+
+        public void requestExitAndWait() {
+            synchronized (sGLThreadManager) {
+                mDone = true;
+                sGLThreadManager.notifyAll();
+            }
+            try {
+                join();
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        public void queueEvent(Runnable r) {
+            synchronized (this) {
+                mEventQueue.add(r);
+                synchronized (sGLThreadManager) {
+                    mEventsWaiting = true;
+                    sGLThreadManager.notifyAll();
+                }
+            }
+        }
+
+        private Runnable getEvent() {
+            synchronized (this) {
+                if (mEventQueue.size() > 0) {
+                    return mEventQueue.remove(0);
+                }
+            }
+            return null;
+        }
+
+        private class GLThreadManager {
+            public synchronized void threadExiting(GLThread thread) {
+                if (LOG_THREADS) {
+                    Log.i("GLThread", "exiting tid=" + thread.getId());
+                }
+                thread.mDone = true;
+                if (mEglOwner == thread) {
+                    mEglOwner = null;
+                }
+                notifyAll();
+            }
+
+            public synchronized boolean tryAcquireEglSurface(GLThread thread) {
+                if (mEglOwner == thread || mEglOwner == null) {
+                    mEglOwner = thread;
+                    notifyAll();
+                    return true;
+                }
+                return false;
+            }
+
+            public synchronized void releaseEglSurface(GLThread thread) {
+                if (mEglOwner == thread) {
+                    mEglOwner = null;
+                }
+                notifyAll();
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Config chooser classes                                             */
+
+    @Deprecated
+    interface EGLConfigChooser extends GLSurfaceView.EGLConfigChooser {
+    }
+
+    abstract static class BaseConfigChooser implements GLSurfaceView.EGLConfigChooser {
+        public BaseConfigChooser(int[] configSpec) {
+            mConfigSpec = configSpec;
+        }
+
+        public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
+            int[] num_config = new int[1];
+            egl.eglChooseConfig(display, mConfigSpec, null, 0, num_config);
+
+            int numConfigs = num_config[0];
+
+            if (numConfigs <= 0) {
+                throw new IllegalArgumentException("No configs match configSpec");
+            }
+
+            EGLConfig[] configs = new EGLConfig[numConfigs];
+            egl.eglChooseConfig(display, mConfigSpec, configs, numConfigs, num_config);
+            EGLConfig config = chooseConfig(egl, display, configs);
+            if (config == null) {
+                throw new IllegalArgumentException("No config chosen");
+            }
+            return config;
+        }
+
+        abstract EGLConfig chooseConfig(EGL10 egl, EGLDisplay display, EGLConfig[] configs);
+
+        protected int[] mConfigSpec;
+
+        public static class ComponentSizeChooser extends BaseConfigChooser {
+            public ComponentSizeChooser(int redSize, int greenSize, int blueSize, int alphaSize, int depthSize,
+                                        int stencilSize) {
+                super(new int[]{EGL10.EGL_RED_SIZE, redSize, EGL10.EGL_GREEN_SIZE, greenSize, EGL10.EGL_BLUE_SIZE,
+                        blueSize, EGL10.EGL_ALPHA_SIZE, alphaSize, EGL10.EGL_DEPTH_SIZE, depthSize, EGL10.EGL_STENCIL_SIZE,
+                        stencilSize, EGL10.EGL_NONE});
+                mValue = new int[1];
+                mRedSize = redSize;
+                mGreenSize = greenSize;
+                mBlueSize = blueSize;
+                mAlphaSize = alphaSize;
+                mDepthSize = depthSize;
+                mStencilSize = stencilSize;
+            }
+
+            @Override
+            public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display, EGLConfig[] configs) {
+                EGLConfig closestConfig = null;
+                int closestDistance = 1000;
+                for (EGLConfig config : configs) {
+                    int d = findConfigAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
+                    int s = findConfigAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);
+                    if (d >= mDepthSize && s >= mStencilSize) {
+                        int r = findConfigAttrib(egl, display, config, EGL10.EGL_RED_SIZE, 0);
+                        int g = findConfigAttrib(egl, display, config, EGL10.EGL_GREEN_SIZE, 0);
+                        int b = findConfigAttrib(egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
+                        int a = findConfigAttrib(egl, display, config, EGL10.EGL_ALPHA_SIZE, 0);
+                        int distance = Math.abs(r - mRedSize) + Math.abs(g - mGreenSize) + Math.abs(b - mBlueSize)
+                                + Math.abs(a - mAlphaSize);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestConfig = config;
+                        }
+                    }
+                }
+                return closestConfig;
+            }
+
+            private int findConfigAttrib(EGL10 egl, EGLDisplay display, EGLConfig config, int attribute, int defaultValue) {
+                if (egl.eglGetConfigAttrib(display, config, attribute, mValue)) {
+                    return mValue[0];
+                }
+                return defaultValue;
+            }
+
+            private int[] mValue;
+            protected int mRedSize;
+            protected int mGreenSize;
+            protected int mBlueSize;
+            protected int mAlphaSize;
+            protected int mDepthSize;
+            protected int mStencilSize;
+        }
+
+        public static class SimpleEGLConfigChooser extends ComponentSizeChooser {
+            public SimpleEGLConfigChooser(boolean withDepthBuffer) {
+                super(4, 4, 4, 0, withDepthBuffer ? 16 : 0, 0);
+                mRedSize = 5;
+                mGreenSize = 6;
+                mBlueSize = 5;
+            }
+        }
+    }
 }
