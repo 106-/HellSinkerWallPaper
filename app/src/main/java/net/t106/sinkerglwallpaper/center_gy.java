@@ -1,55 +1,78 @@
 package net.t106.sinkerglwallpaper;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES32;
 
+/**
+ * Center rotating graveyard object for OpenGL ES 3.2
+ * Migrated from OpenGL ES 1.0 fixed pipeline
+ */
 public class center_gy extends graveyard {
+
+	private float rotation = 0.0f;
+	private static final float ROTATION_SPEED = -0.125f;
+	private static final int MAX_COUNT = 2881;
 
 	public center_gy()
 	{
 		super();
+		// Define quad vertices (same as original)
 		apex = new float[] { -1f, -1f, 1f, -1f, -1f, 1f, 1f, 1f, };
 		coords = new float[] {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };
 		
+		// Keep legacy buffer creation for compatibility
 		ab = SinkerService.makeFloatBuffer(apex);
 		cb = SinkerService.makeFloatBuffer(coords);
 	}
 	
 	@Override
-	public void Draw(GL10 gl) {
-		cnt++;
-		if(cnt == 2881)cnt = 0;
-		//座標系の保存
-		gl.glPushMatrix();
-		//回転
-		gl.glRotatef(-0.125f*cnt, 0.0f, 0.0f, 1.0f);
-		//頂点を有効化
-		gl.glVertexPointer(2, GL10.GL_FLOAT, 0, ab);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		//頂点にテクスチャを付ける
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, SinkerService.textures[0]);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, cb);
-		//OpenGLを2Dモードに
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		//加算合成を有効にする
-		gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE);
-		gl.glEnable(GL10.GL_BLEND);
-		//頂点の描画
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		//無効化
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-	   	gl.glDisable(GL10.GL_TEXTURE_2D);
-	   	gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glDisable(GL10.GL_BLEND);
+	protected void createShaderProgram() {
+		// Use blend shader program for additive blending
+		shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
+	}
+	
+	@Override
+	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+		// Update MVP matrix with current rotation
+		updateMVP(viewMatrix, projectionMatrix);
 		
-	   	//保存内容の復元
-	   	gl.glPopMatrix();
+		// Bind shader and set uniforms
+		bindShader();
+		
+		// Set texture
+		TextureUtils.bindTexture(0, SinkerService.textures[0]);
+		
+		// Set blend mode to additive (0)
+		ShaderUtils.setUniform1i(blendModeLocation, 0);
+		
+		// Set color (white for no tinting)
+		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+		
+		// Enable blending for additive effect
+		GLES32.glEnable(GLES32.GL_BLEND);
+		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
+		
+		// Bind VAO and draw
+		BufferUtils.bindVAO(vao);
+		BufferUtils.drawQuad();
+		BufferUtils.unbindVAO();
+		
+		// Disable blending
+		GLES32.glDisable(GLES32.GL_BLEND);
+		
+		// Unbind texture
+		TextureUtils.unbindTexture(0);
 	}
 
 	@Override
-	public void Update(GL10 gl) {
-		// TODO 自動生成されたメソッド・スタブ
+	public void Update(float deltaTime) {
+		// Update rotation counter
+		cnt++;
+		if(cnt >= MAX_COUNT) cnt = 0;
 		
+		// Calculate rotation angle
+		rotation = ROTATION_SPEED * cnt;
+		
+		// Update model matrix with rotation
+		modelMatrix = MatrixUtils.rotateZ(rotation);
 	}
-
 }
