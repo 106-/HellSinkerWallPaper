@@ -25,6 +25,15 @@ public class SeekBarPreference extends DialogPreference{
 
 	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		init(context);
+	}
+	
+	public SeekBarPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		init(context);
+	}
+	
+	private void init(Context context) {
 		cxt = context;
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
 		col[0] = sp.getInt("col_R", 50);

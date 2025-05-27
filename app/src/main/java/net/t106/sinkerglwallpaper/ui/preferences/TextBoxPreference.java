@@ -12,6 +12,11 @@ public class TextBoxPreference extends DialogPreference{
 		setDialogLayoutResource(R.layout.textboxpref);
 	}
 	
+	public TextBoxPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		setDialogLayoutResource(R.layout.textboxpref);
+	}
+	
 	public void onBindDialogView(android.view.View view) {
 	}
 	
