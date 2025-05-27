@@ -63,13 +63,13 @@ public class CenterGraveyard extends Graveyard {
 		// Set texture
 		TextureUtils.bindTexture(0, SinkerService.textures[0]);
 		
-		// Set blend mode to multiply (1) for testing
-		ShaderUtils.setUniform1i(blendModeLocation, 1);
+		// Set blend mode to alpha (2) for transparency
+		ShaderUtils.setUniform1i(blendModeLocation, 2);
 		
-		// Set color (bright red for testing visibility)
-		ShaderUtils.setUniform4f(colorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+		// Set color with transparency (red with 50% alpha)
+		ShaderUtils.setUniform4f(colorLocation, 1.0f, 0.0f, 0.0f, 0.5f);
 		
-		// Use normal alpha blending for testing
+		// Use normal alpha blending for transparency
 		GLES32.glEnable(GLES32.GL_BLEND);
 		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
 		

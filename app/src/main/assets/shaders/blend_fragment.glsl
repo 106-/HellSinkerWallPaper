@@ -36,8 +36,9 @@ void main() {
         finalColor = texColor * blendColor;
         
     } else if (u_blendMode == BLEND_ALPHA) {
-        // Alpha blending: interpolate based on alpha
-        finalColor = mix(texColor, blendColor, blendColor.a);
+        // Alpha blending: combine texture and color properly
+        finalColor.rgb = mix(texColor.rgb, blendColor.rgb, blendColor.a);
+        finalColor.a = texColor.a * blendColor.a;
         
     } else if (u_blendMode == BLEND_XOR) {
         // XOR-like blending: absolute difference
