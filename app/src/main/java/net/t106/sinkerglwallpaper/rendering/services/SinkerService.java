@@ -87,10 +87,10 @@ public class SinkerService extends GLWallpaperServiceES32{
 			rf.Update(deltaTime);
 			
 			// Draw objects - filters first, then graveyards
-			rf.Draw(viewMatrix, projectionMatrix);
-			lf.Draw(viewMatrix, projectionMatrix);
 			bgy.Draw(viewMatrix, projectionMatrix);
 			cgy.Draw(viewMatrix, projectionMatrix);
+			lf.Draw(viewMatrix, projectionMatrix);
+			rf.Draw(viewMatrix, projectionMatrix);
 		}
 		
 		private void resetOpenGLState() {

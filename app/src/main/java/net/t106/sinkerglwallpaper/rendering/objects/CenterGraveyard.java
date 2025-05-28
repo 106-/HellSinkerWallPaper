@@ -67,12 +67,13 @@ public class CenterGraveyard extends Graveyard {
 		ShaderUtils.setUniform1i(blendModeLocation, 0);
 		
 		// Set color (white for no tinting)
-		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+		ShaderUtils.setUniform4f(colorLocation, 0.37f, 1.0f, 1.0f, 1.0f);
 		
 		// Use additive blending for glowing effects
 		GLES32.glEnable(GLES32.GL_BLEND);
 		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
-		
+//		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
+
 		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
