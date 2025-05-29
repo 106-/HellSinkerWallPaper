@@ -45,8 +45,8 @@ public class CenterGraveyard extends Graveyard {
 			android.util.Log.e("CenterGraveyard", "Shader program is 0!");
 			return;
 		}
-		if (SinkerService.textures[0] == 0) {
-			android.util.Log.e("CenterGraveyard", "Texture is 0!");
+		if (!TextureUtils.isValidTexture(SinkerService.textures[0])) {
+			android.util.Log.e("CenterGraveyard", "Texture is invalid!");
 			return;
 		}
 		if (vao == 0) {

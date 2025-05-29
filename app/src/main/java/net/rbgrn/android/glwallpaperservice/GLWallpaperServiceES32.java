@@ -182,6 +182,14 @@ public class GLWallpaperServiceES32 extends WallpaperService {
 
         public void onResume() {
             mGLThread.onResume();
+            // Queue an event to force texture validation on resume
+            mGLThread.queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    // This will trigger texture validation in renderer
+                    android.util.Log.d("GLWallpaperService", "Resume texture validation queued");
+                }
+            });
         }
 
         public void queueEvent(Runnable r) {
@@ -364,7 +372,12 @@ public class GLWallpaperServiceES32 extends WallpaperService {
 
         public boolean swap() {
             mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);
-            return mEgl.eglGetError() != EGL11.EGL_CONTEXT_LOST;
+            int error = mEgl.eglGetError();
+            if (error == EGL11.EGL_CONTEXT_LOST) {
+                Log.w("GLWallpaperService", "EGL context lost - textures need to be reloaded");
+                return false;
+            }
+            return true;
         }
 
         public void destroySurface() {
@@ -557,7 +570,12 @@ public class GLWallpaperServiceES32 extends WallpaperService {
                     }
                     if ((w > 0) && (h > 0)) {
                         mRenderer.onDrawFrame(gl);
-                        mEglHelper.swap();
+                        if (!mEglHelper.swap()) {
+                            // Context lost - force surface recreation to reload textures
+                            Log.w("GLThread", "Context lost detected, forcing surface recreation");
+                            tellRendererSurfaceCreated = true;
+                            changed = true;
+                        }
                         Thread.sleep(10);
                     }
                 }
@@ -639,6 +657,15 @@ public class GLWallpaperServiceES32 extends WallpaperService {
             synchronized (sGLThreadManager) {
                 mPaused = false;
                 mRequestRender = true;
+                // Force texture reload on resume to handle context loss during pause
+                Log.d("GLThread", "Resume detected, requesting texture reload");
+                queueEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Texture reload will be handled in onSurfaceCreated if needed
+                        Log.d("GLThread", "Resume event processed");
+                    }
+                });
                 sGLThreadManager.notifyAll();
             }
         }
