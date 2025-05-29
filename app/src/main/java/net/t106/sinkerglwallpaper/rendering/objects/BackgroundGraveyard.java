@@ -44,7 +44,11 @@ public class BackgroundGraveyard extends Graveyard {
 		// Bind shader and set uniforms
 		bindShader();
 		
-		// Set texture (using flipped texture)
+		// Validate and set texture (using flipped texture)
+		if (!TextureUtils.isValidTexture(SinkerService.textures[1])) {
+			android.util.Log.e("BackgroundGraveyard", "Flipped texture is invalid!");
+			return;
+		}
 		TextureUtils.bindTexture(0, SinkerService.textures[1]);
 		
 		// Set blend mode to additive (0)

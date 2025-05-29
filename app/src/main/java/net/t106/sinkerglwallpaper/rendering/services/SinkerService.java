@@ -172,10 +172,17 @@ public class SinkerService extends GLWallpaperServiceES32{
 		
 		@Override
 		public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl, javax.microedition.khronos.egl.EGLConfig arg1) {
-			// Delete old textures if they exist
-			if (textures[0] != 0 || textures[1] != 0) {
+			android.util.Log.d("SinkerService", "onSurfaceCreated called - reloading textures");
+			
+			// Delete old textures if they exist and are valid
+			if (TextureUtils.isValidTexture(textures[0]) || TextureUtils.isValidTexture(textures[1])) {
+				android.util.Log.d("SinkerService", "Deleting old textures");
 				TextureUtils.deleteTextures(textures);
 			}
+			
+			// Reset texture handles to avoid using invalid handles
+			textures[0] = 0;
+			textures[1] = 0;
 			
 			// Load textures using new utility
 			int[] newTextures = TextureUtils.loadTextureWithFlipped(context, R.drawable.gr);
