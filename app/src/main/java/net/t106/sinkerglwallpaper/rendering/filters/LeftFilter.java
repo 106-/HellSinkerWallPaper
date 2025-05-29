@@ -35,35 +35,21 @@ public class LeftFilter extends Graveyard {
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
-		android.util.Log.d("LeftFilter", "Draw() called, blend_type=" + SinkerService.blend_type + 
-			", col=[" + SinkerService.col[0] + "," + SinkerService.col[1] + "," + SinkerService.col[2] + "," + SinkerService.col[3] + "]");
-		
+
 		// Update MVP matrix (no rotation, just basic transformation)
 		updateMVP(viewMatrix, projectionMatrix);
-		
+
 		// Bind shader and set uniforms
 		bindShader();
-		
-		// Set blend mode to fixed multiplicative (1)
-		ShaderUtils.setUniform1i(blendModeLocation, 1);
-		
-		// Set original color (0.5, 0.5, 1.0, 0.5)
-		float red = 0.5f;   
-		float green = 0.5f;   
-		float blue = 1.0f;  
-		float alpha = 0.5f; 
-		ShaderUtils.setUniform4f(colorLocation, red, green, blue, alpha);
-		
-		// Enable fixed multiplicative blending
+
 		GLES32.glEnable(GLES32.GL_BLEND);
-		GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
-		
-		// Bind VAO and draw
+
+		ShaderUtils.setUniform4f(colorLocation, 0.2f, 0.4f, 0.60f, 0.4f);
+		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
 		BufferUtils.unbindVAO();
-		
-		// Disable blending
+
 		GLES32.glDisable(GLES32.GL_BLEND);
 	}
 
@@ -79,7 +65,7 @@ public class LeftFilter extends Graveyard {
 		
 		// Update vertex data based on size
 		if(smollflg) {
-			apex = new float[] { -0.5f, -1.5f, 0.5f, -1.5f, -0.5f, 1.5f, 0.5f, 1.5f, };
+			apex = new float[] { -0.5f, -1.5f, 0.0f, -1.5f, -0.5f, 1.5f, 0.0f, 1.5f, };
 		} else {
 			apex = new float[] { -0.7f, -1.5f, 0.7f, -1.5f, -0.7f, 1.5f, 0.7f, 1.5f, };
 		}

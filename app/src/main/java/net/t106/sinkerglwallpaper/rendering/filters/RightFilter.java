@@ -46,18 +46,17 @@ public class RightFilter extends Graveyard {
 		
 		// Bind shader and set uniforms
 		bindShader();
-		
-		// Set blend mode to fixed XOR mode (3)
-		ShaderUtils.setUniform1i(blendModeLocation, 3);
-		
-		// Set fixed pinkish color
-		ShaderUtils.setUniform4f(colorLocation, 1.0f, 0.5f, 0.5f, 0.5f);
-		
-		// Enable fixed special blending for invert effect
+
 		GLES32.glEnable(GLES32.GL_BLEND);
+
+		ShaderUtils.setUniform4f(colorLocation, 0.2f, 0.4f, 0.60f, 0.4f);
+		GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
+		BufferUtils.bindVAO(vao);
+		BufferUtils.drawQuad();
+		BufferUtils.unbindVAO();
+
+		ShaderUtils.setUniform4f(colorLocation, 0.85f, 0.85f, 0.85f, 1.00f);
 		GLES32.glBlendFunc(GLES32.GL_ONE_MINUS_DST_COLOR, GLES32.GL_ZERO);
-		
-		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
 		BufferUtils.unbindVAO();
