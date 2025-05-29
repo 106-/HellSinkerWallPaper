@@ -23,6 +23,15 @@ public class SizeChangePreference extends DialogPreference {
 	
 	public SizeChangePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		init(context);
+	}
+	
+	public SizeChangePreference(Context context, AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		init(context);
+	}
+	
+	private void init(Context context) {
 		cxt = context;
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(cxt);
 		tmp_prog = sp.getInt("size", 200);

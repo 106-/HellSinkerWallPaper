@@ -38,6 +38,22 @@ public class CenterGraveyard extends Graveyard {
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+		// android.util.Log.d("CenterGraveyard", "Draw() called");
+		
+		// Debug: Check if shader and texture are valid
+		if (shaderProgram == 0) {
+			android.util.Log.e("CenterGraveyard", "Shader program is 0!");
+			return;
+		}
+		if (SinkerService.textures[0] == 0) {
+			android.util.Log.e("CenterGraveyard", "Texture is 0!");
+			return;
+		}
+		if (vao == 0) {
+			android.util.Log.e("CenterGraveyard", "VAO is 0!");
+			return;
+		}
+		
 		// Update MVP matrix with current rotation
 		updateMVP(viewMatrix, projectionMatrix);
 		
@@ -47,16 +63,17 @@ public class CenterGraveyard extends Graveyard {
 		// Set texture
 		TextureUtils.bindTexture(0, SinkerService.textures[0]);
 		
-		// Set blend mode to additive (0)
+		// Set blend mode to additive (0) for beautiful color effects
 		ShaderUtils.setUniform1i(blendModeLocation, 0);
 		
 		// Set color (white for no tinting)
-		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+		ShaderUtils.setUniform4f(colorLocation, 0.37f, 1.0f, 1.0f, 1.0f);
 		
-		// Enable blending for additive effect
+		// Use additive blending for glowing effects
 		GLES32.glEnable(GLES32.GL_BLEND);
 		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
-		
+//		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
+
 		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();

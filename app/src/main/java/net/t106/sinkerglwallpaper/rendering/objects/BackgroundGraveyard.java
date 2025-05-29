@@ -18,12 +18,6 @@ public class BackgroundGraveyard extends Graveyard {
 	private static final float ROTATION_SPEED = 0.125f;  // Positive rotation (opposite to center)
 	private static final int MAX_COUNT = 2880;
 	
-	// Color tint for background
-	private static final float RED = 0.375f;
-	private static final float GREEN = 0.04f;
-	private static final float BLUE = 0.09f;
-	private static final float ALPHA = 0.5f;
-	
 	public BackgroundGraveyard()
 	{
 		super();
@@ -57,7 +51,7 @@ public class BackgroundGraveyard extends Graveyard {
 		ShaderUtils.setUniform1i(blendModeLocation, 0);
 		
 		// Set color tint (reddish-brown tint)
-		ShaderUtils.setUniform4f(colorLocation, RED, GREEN, BLUE, ALPHA);
+		ShaderUtils.setUniform4f(colorLocation, 0.375f, 0.04f, 0.09f, 1.0f);
 		
 		// Enable blending for additive effect
 		GLES32.glEnable(GLES32.GL_BLEND);

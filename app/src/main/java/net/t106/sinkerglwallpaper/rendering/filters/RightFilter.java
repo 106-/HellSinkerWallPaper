@@ -35,8 +35,8 @@ public class RightFilter extends Graveyard {
 	
 	@Override
 	protected void createShaderProgram() {
-		// Use basic shader program without texture
-		shaderProgram = ShaderLoader.Programs.createBasicProgram(SinkerService.getContext());
+		// Use color shader program for color-only rendering
+		shaderProgram = ShaderLoader.Programs.createColorProgram(SinkerService.getContext());
 	}
 	
 	@Override
@@ -46,21 +46,17 @@ public class RightFilter extends Graveyard {
 		
 		// Bind shader and set uniforms
 		bindShader();
-		
-		// No texture binding needed for color-only rendering
-		ShaderUtils.setUniform1i(textureLocation, 0);
-		
-		// Set blend mode to custom invert effect (can be simulated with XOR mode)
-		ShaderUtils.setUniform1i(blendModeLocation, 3); // XOR mode
-		
-		// Set filter color (pinkish)
-		ShaderUtils.setUniform4f(colorLocation, RED, GREEN, BLUE, ALPHA);
-		
-		// Enable special blending for invert effect
+
 		GLES32.glEnable(GLES32.GL_BLEND);
+
+		ShaderUtils.setUniform4f(colorLocation, 0.2f, 0.4f, 0.60f, 0.4f);
+		GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
+		BufferUtils.bindVAO(vao);
+		BufferUtils.drawQuad();
+		BufferUtils.unbindVAO();
+
+		ShaderUtils.setUniform4f(colorLocation, 0.85f, 0.85f, 0.85f, 1.00f);
 		GLES32.glBlendFunc(GLES32.GL_ONE_MINUS_DST_COLOR, GLES32.GL_ZERO);
-		
-		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
 		BufferUtils.unbindVAO();

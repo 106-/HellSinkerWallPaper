@@ -29,64 +29,27 @@ public class LeftFilter extends Graveyard {
 	
 	@Override
 	protected void createShaderProgram() {
-		// Use blend shader program for customizable blending
-		shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
+		// Use color shader program for color-only rendering
+		shaderProgram = ShaderLoader.Programs.createColorProgram(SinkerService.getContext());
 	}
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+
 		// Update MVP matrix (no rotation, just basic transformation)
 		updateMVP(viewMatrix, projectionMatrix);
-		
+
 		// Bind shader and set uniforms
 		bindShader();
-		
-		// No texture binding needed for color-only rendering
-		ShaderUtils.setUniform1i(textureLocation, 0);
-		
-		// Set blend mode from user settings
-		ShaderUtils.setUniform1i(blendModeLocation, SinkerService.blend_type);
-		
-		// Set color from user settings (convert from 0-100 range to 0.0-1.0)
-		int[] col = SinkerService.col;
-		float red = col[0] / 100.0f;
-		float green = col[1] / 100.0f;
-		float blue = col[2] / 100.0f;
-		float alpha = col[3] / 100.0f;
-		ShaderUtils.setUniform4f(colorLocation, red, green, blue, alpha);
-		
-		// Enable blending with mode based on user settings
+
 		GLES32.glEnable(GLES32.GL_BLEND);
-		
-		switch(SinkerService.blend_type)
-		{
-		// Additive
-		case 0:
-			GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
-			break;
-		// Multiplicative  
-		case 1:
-			GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
-			break;
-		// Alpha
-		case 2:
-			GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE);
-			break;
-		// XOR (Exclusive OR)
-		case 3:
-			GLES32.glBlendFunc(GLES32.GL_ONE_MINUS_DST_COLOR, GLES32.GL_ONE_MINUS_SRC_COLOR);
-			break;
-		default:
-			GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
-			break;
-		}
-		
-		// Bind VAO and draw
+
+		ShaderUtils.setUniform4f(colorLocation, 0.2f, 0.4f, 0.60f, 0.4f);
+		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
 		BufferUtils.unbindVAO();
-		
-		// Disable blending
+
 		GLES32.glDisable(GLES32.GL_BLEND);
 	}
 
@@ -102,7 +65,7 @@ public class LeftFilter extends Graveyard {
 		
 		// Update vertex data based on size
 		if(smollflg) {
-			apex = new float[] { -0.5f, -1.5f, 0.5f, -1.5f, -0.5f, 1.5f, 0.5f, 1.5f, };
+			apex = new float[] { -0.5f, -1.5f, 0.0f, -1.5f, -0.5f, 1.5f, 0.0f, 1.5f, };
 		} else {
 			apex = new float[] { -0.7f, -1.5f, 0.7f, -1.5f, -0.7f, 1.5f, 0.7f, 1.5f, };
 		}

@@ -26,18 +26,23 @@ void main() {
     vec4 blendColor = u_color;
     vec4 finalColor;
     
+    // Calculate luminance to detect dark areas (for black background transparency)
+    float luminance = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+    
     // Apply different blend modes
     if (u_blendMode == BLEND_ADD) {
-        // Additive blending: add colors together
-        finalColor = clamp(texColor + blendColor, 0.0, 1.0);
+        // Additive blending: multiply texture with color first, then add in framebuffer
+        finalColor.rgb = texColor.rgb * blendColor.rgb;
+        finalColor.a = texColor.a * blendColor.a;
         
     } else if (u_blendMode == BLEND_MULTIPLY) {
         // Multiplicative blending: multiply colors
         finalColor = texColor * blendColor;
         
     } else if (u_blendMode == BLEND_ALPHA) {
-        // Alpha blending: interpolate based on alpha
-        finalColor = mix(texColor, blendColor, blendColor.a);
+        // Alpha blending: preserve texture transparency
+        finalColor.rgb = texColor.rgb * blendColor.rgb;
+        finalColor.a = texColor.a * blendColor.a;
         
     } else if (u_blendMode == BLEND_XOR) {
         // XOR-like blending: absolute difference
@@ -52,7 +57,17 @@ void main() {
         finalColor = texColor * blendColor;
     }
     
-    // Ensure alpha is reasonable
+    // Discard dark pixels (black background) to create transparency
+    if (luminance < 0.1) {
+        discard;
+    }
+    
+    // Discard completely transparent pixels from texture alpha
+    if (texColor.a < 0.01) {
+        discard;
+    }
+    
+    // Also discard if final alpha is too low
     if (finalColor.a < 0.01) {
         discard;
     }

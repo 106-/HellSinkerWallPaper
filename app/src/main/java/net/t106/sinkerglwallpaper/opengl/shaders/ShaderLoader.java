@@ -73,5 +73,9 @@ public class ShaderLoader {
         public static int createBlendProgram(Context context) {
             return createProgramFromAssets(context, "basic_vertex.glsl", "blend_fragment.glsl");
         }
+        
+        public static int createColorProgram(Context context) {
+            return createProgramFromAssets(context, "basic_vertex.glsl", "color_fragment.glsl");
+        }
     }
 }
