@@ -6,14 +6,14 @@ import net.t106.sinkerglwallpaper.config.BlendModeManager;
 import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
 import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
-import net.t106.sinkerglwallpaper.rendering.objects.Graveyard;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
+import net.t106.sinkerglwallpaper.rendering.objects.Garland;
 
 /**
  * Base class for all filter objects
  * Eliminates code duplication between LeftFilter and RightFilter
  */
-public abstract class BaseFilter extends Graveyard {
+public abstract class BaseFilter extends Garland {
     
     protected RenderConfig.ColorConfig colorConfig;
     protected RenderConfig.GeometryConfig geometryConfig;
@@ -47,14 +47,14 @@ public abstract class BaseFilter extends Graveyard {
         coords = geometryConfig.texCoords;
         
         // Keep legacy buffer creation for compatibility
-        ab = SinkerService.makeFloatBuffer(apex);
-        cb = SinkerService.makeFloatBuffer(coords);
+        ab = AThingLeftBehindService.makeFloatBuffer(apex);
+        cb = AThingLeftBehindService.makeFloatBuffer(coords);
     }
     
     @Override
     protected void createShaderProgram() {
         // Use basic shader program for filters (no texture needed typically)
-        shaderProgram = ShaderLoader.Programs.createBasicProgram(SinkerService.getContext());
+        shaderProgram = ShaderLoader.Programs.createBasicProgram(AThingLeftBehindService.getContext());
     }
     
     @Override
@@ -111,7 +111,7 @@ public abstract class BaseFilter extends Graveyard {
         apex = geometryConfig.vertices;
         
         // Update buffer
-        ab = SinkerService.makeFloatBuffer(apex);
+        ab = AThingLeftBehindService.makeFloatBuffer(apex);
         
         // Recreate VAO with new vertex data
         if (vao != 0) {

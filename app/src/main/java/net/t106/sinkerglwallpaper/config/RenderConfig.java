@@ -165,12 +165,12 @@ public class RenderConfig {
         }
         
         // Predefined complete configurations
-        public static final CompleteConfig CENTER_GRAVEYARD = new CompleteConfig(
+        public static final CompleteConfig CENTER_GARLAND = new CompleteConfig(
             RotationConfig.CENTER, ColorConfig.WHITE, TextureConfig.TEXTURE_0,
             GeometryConfig.STANDARD_QUAD, BlendModeManager.BLEND_ADDITIVE
         );
         
-        public static final CompleteConfig BACKGROUND_GRAVEYARD = new CompleteConfig(
+        public static final CompleteConfig BACKGROUND_GARLAND = new CompleteConfig(
             RotationConfig.BACKGROUND, ColorConfig.REDDISH_BROWN, TextureConfig.TEXTURE_1,
             GeometryConfig.LARGE_QUAD, BlendModeManager.BLEND_ADDITIVE
         );

@@ -6,19 +6,19 @@ import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
 import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 
 /**
- * Center rotating graveyard object for OpenGL ES 3.2
+ * Center rotating garland object for OpenGL ES 3.2
  * Migrated from OpenGL ES 1.0 fixed pipeline
  */
-public class CenterGraveyard extends Graveyard {
+public class CenterGarland extends Garland {
 
 	private float rotation = 0.0f;
 	private static final float ROTATION_SPEED = -0.125f;
 	private static final int MAX_COUNT = 2881;
 
-	public CenterGraveyard()
+	public CenterGarland()
 	{
 		super();
 		// Define quad vertices (same as original)
@@ -26,31 +26,31 @@ public class CenterGraveyard extends Graveyard {
 		coords = new float[] {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };
 		
 		// Keep legacy buffer creation for compatibility
-		ab = SinkerService.makeFloatBuffer(apex);
-		cb = SinkerService.makeFloatBuffer(coords);
+		ab = AThingLeftBehindService.makeFloatBuffer(apex);
+		cb = AThingLeftBehindService.makeFloatBuffer(coords);
 	}
 	
 	@Override
 	protected void createShaderProgram() {
 		// Use blend shader program for additive blending
-		shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
+		shaderProgram = ShaderLoader.Programs.createBlendProgram(AThingLeftBehindService.getContext());
 	}
 	
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
-		// android.util.Log.d("CenterGraveyard", "Draw() called");
+		// android.util.Log.d("CenterGarland", "Draw() called");
 		
 		// Debug: Check if shader and texture are valid
 		if (shaderProgram == 0) {
-			android.util.Log.e("CenterGraveyard", "Shader program is 0!");
+			android.util.Log.e("CenterGarland", "Shader program is 0!");
 			return;
 		}
-		if (SinkerService.textures[0] == 0) {
-			android.util.Log.e("CenterGraveyard", "Texture is 0!");
+		if (AThingLeftBehindService.textures[0] == 0) {
+			android.util.Log.e("CenterGarland", "Texture is 0!");
 			return;
 		}
 		if (vao == 0) {
-			android.util.Log.e("CenterGraveyard", "VAO is 0!");
+			android.util.Log.e("CenterGarland", "VAO is 0!");
 			return;
 		}
 		
@@ -61,7 +61,7 @@ public class CenterGraveyard extends Graveyard {
 		bindShader();
 		
 		// Set texture
-		TextureUtils.bindTexture(0, SinkerService.textures[0]);
+		TextureUtils.bindTexture(0, AThingLeftBehindService.textures[0]);
 		
 		// Set blend mode to additive (0) for beautiful color effects
 		ShaderUtils.setUniform1i(blendModeLocation, 0);

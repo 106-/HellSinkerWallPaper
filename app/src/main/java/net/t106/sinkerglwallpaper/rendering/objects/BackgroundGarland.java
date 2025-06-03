@@ -6,34 +6,34 @@ import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
 import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 
 /**
- * Background rotating graveyard object for OpenGL ES 3.2
- * Larger than CenterGraveyard and rotates in opposite direction with color tint
+ * Background rotating garland object for OpenGL ES 3.2
+ * Larger than CenterGarland and rotates in opposite direction with color tint
  */
-public class BackgroundGraveyard extends Graveyard {
+public class BackgroundGarland extends Garland {
 	
 	private float rotation = 0.0f;
 	private static final float ROTATION_SPEED = 0.125f;  // Positive rotation (opposite to center)
 	private static final int MAX_COUNT = 2880;
 	
-	public BackgroundGraveyard()
+	public BackgroundGarland()
 	{
 		super();
-		// Larger quad vertices (1.5x scale compared to CenterGraveyard)
+		// Larger quad vertices (1.5x scale compared to CenterGarland)
 		apex = new float[] { -1.5f, -1.5f, 1.5f, -1.5f, -1.5f, 1.5f, 1.5f, 1.5f, };
 		coords = new float[] {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };
 		
 		// Keep legacy buffer creation for compatibility
-		ab = SinkerService.makeFloatBuffer(apex);
-		cb = SinkerService.makeFloatBuffer(coords);
+		ab = AThingLeftBehindService.makeFloatBuffer(apex);
+		cb = AThingLeftBehindService.makeFloatBuffer(coords);
 	}
 
 	@Override
 	protected void createShaderProgram() {
 		// Use blend shader program for additive blending with color tint
-		shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
+		shaderProgram = ShaderLoader.Programs.createBlendProgram(AThingLeftBehindService.getContext());
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class BackgroundGraveyard extends Graveyard {
 		bindShader();
 		
 		// Set texture (using flipped texture)
-		TextureUtils.bindTexture(0, SinkerService.textures[1]);
+		TextureUtils.bindTexture(0, AThingLeftBehindService.textures[1]);
 		
 		// Set blend mode to additive (0)
 		ShaderUtils.setUniform1i(blendModeLocation, 0);

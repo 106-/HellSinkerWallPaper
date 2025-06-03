@@ -6,13 +6,13 @@ import net.t106.sinkerglwallpaper.opengl.utils.MatrixUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
 import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 
 /**
  * Abstract base class for OpenGL ES 3.2 rendering objects
  * Migrated from OpenGL ES 1.0 fixed pipeline to modern programmable pipeline
  */
-public abstract class Graveyard {
+public abstract class Garland {
 	protected float apex[], coords[];
 	protected FloatBuffer ab, cb;
 	protected int cnt;
@@ -33,7 +33,7 @@ public abstract class Graveyard {
 	protected float[] modelMatrix;
 	protected float[] mvpMatrix;
 	
-	public Graveyard() {
+	public Garland() {
 		modelMatrix = MatrixUtils.identity();
 		mvpMatrix = new float[16];
 	}
@@ -43,14 +43,14 @@ public abstract class Graveyard {
 	 * Must be called after OpenGL context is created
 	 */
 	public void initGL() {
-		android.util.Log.d("Graveyard", getClass().getSimpleName() + " initGL() started");
+		android.util.Log.d("Garland", getClass().getSimpleName() + " initGL() started");
 		
 		// Create shader program
 		createShaderProgram();
-		android.util.Log.d("Graveyard", getClass().getSimpleName() + " shader program: " + shaderProgram);
+		android.util.Log.d("Garland", getClass().getSimpleName() + " shader program: " + shaderProgram);
 		
 		if (shaderProgram == 0) {
-			android.util.Log.e("Graveyard", getClass().getSimpleName() + " failed to create shader program!");
+			android.util.Log.e("Garland", getClass().getSimpleName() + " failed to create shader program!");
 			return;
 		}
 		
@@ -60,14 +60,14 @@ public abstract class Graveyard {
 		colorLocation = ShaderUtils.getUniformLocation(shaderProgram, "u_color");
 		blendModeLocation = ShaderUtils.getUniformLocation(shaderProgram, "u_blendMode");
 		
-		android.util.Log.d("Graveyard", getClass().getSimpleName() + " uniform locations: mvp=" + mvpMatrixLocation + 
+		android.util.Log.d("Garland", getClass().getSimpleName() + " uniform locations: mvp=" + mvpMatrixLocation + 
 			", texture=" + textureLocation + ", color=" + colorLocation + ", blend=" + blendModeLocation);
 		
 		// Create VAO and VBOs
 		createBuffers();
-		android.util.Log.d("Graveyard", getClass().getSimpleName() + " VAO: " + vao);
+		android.util.Log.d("Garland", getClass().getSimpleName() + " VAO: " + vao);
 		
-		android.util.Log.d("Graveyard", getClass().getSimpleName() + " initGL() completed");
+		android.util.Log.d("Garland", getClass().getSimpleName() + " initGL() completed");
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public abstract class Graveyard {
 	protected void createShaderProgram() {
 		// Default implementation uses basic shader program
 		// Subclasses can override to use different shaders
-		shaderProgram = ShaderLoader.Programs.createBasicProgram(SinkerService.getContext());
+		shaderProgram = ShaderLoader.Programs.createBasicProgram(AThingLeftBehindService.getContext());
 	}
 	
 	/**

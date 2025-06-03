@@ -3,14 +3,14 @@ import android.opengl.GLES32;
 import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
 import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
-import net.t106.sinkerglwallpaper.rendering.objects.Graveyard;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
+import net.t106.sinkerglwallpaper.rendering.objects.Garland;
 
 /**
  * Left filter for OpenGL ES 3.2
  * Renders a customizable colored overlay with user-selectable blend modes
  */
-public class LeftFilter extends Graveyard {
+public class LeftFilter extends Garland {
 
 	private boolean isSmallSize = false;
 
@@ -23,14 +23,14 @@ public class LeftFilter extends Graveyard {
 		coords = new float[] { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f };
 		
 		// Keep legacy buffer creation for compatibility
-		ab = SinkerService.makeFloatBuffer(apex);
-		cb = SinkerService.makeFloatBuffer(coords);
+		ab = AThingLeftBehindService.makeFloatBuffer(apex);
+		cb = AThingLeftBehindService.makeFloatBuffer(coords);
 	}
 	
 	@Override
 	protected void createShaderProgram() {
 		// Use color shader program for color-only rendering
-		shaderProgram = ShaderLoader.Programs.createColorProgram(SinkerService.getContext());
+		shaderProgram = ShaderLoader.Programs.createColorProgram(AThingLeftBehindService.getContext());
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class LeftFilter extends Graveyard {
 		}
 		
 		// Update buffer
-		ab = SinkerService.makeFloatBuffer(apex);
+		ab = AThingLeftBehindService.makeFloatBuffer(apex);
 		
 		// Recreate VAO with new vertex data
 		if (vao != 0) {

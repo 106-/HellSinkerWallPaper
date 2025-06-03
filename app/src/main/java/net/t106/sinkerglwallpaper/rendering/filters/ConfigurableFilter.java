@@ -2,7 +2,7 @@ package net.t106.sinkerglwallpaper.rendering.filters;
 
 import net.t106.sinkerglwallpaper.config.RenderConfig;
 import net.t106.sinkerglwallpaper.config.BlendModeManager;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 
 /**
  * Configurable filter class - replaces LeftFilter.java
@@ -38,10 +38,10 @@ public class ConfigurableFilter extends BaseFilter {
      */
     private void updateFromUserSettings() {
         // Update color from user settings
-        colorConfig = RenderConfig.ColorConfig.fromUserSettings(SinkerService.col);
+        colorConfig = RenderConfig.ColorConfig.fromUserSettings(AThingLeftBehindService.col);
         
         // Update blend mode from user settings
-        blendMode = SinkerService.blend_type;
+        blendMode = AThingLeftBehindService.blend_type;
     }
     
     @Override
