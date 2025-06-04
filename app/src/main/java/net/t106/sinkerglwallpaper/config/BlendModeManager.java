@@ -8,7 +8,7 @@ import android.opengl.GLES32;
  */
 public class BlendModeManager {
     
-    // Blend mode constants matching SinkerService.blend_type
+    // Blend mode constants matching AThingLeftBehindService.blend_type
     public static final int BLEND_ADDITIVE = 0;
     public static final int BLEND_MULTIPLICATIVE = 1;
     public static final int BLEND_ALPHA = 2;

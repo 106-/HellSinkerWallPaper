@@ -15,14 +15,14 @@ import androidx.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 import net.rbgrn.android.glwallpaperservice.GLWallpaperServiceES32;
 import net.t106.sinkerglwallpaper.R;
-import net.t106.sinkerglwallpaper.rendering.objects.CenterGraveyard;
-import net.t106.sinkerglwallpaper.rendering.objects.BackgroundGraveyard;
+import net.t106.sinkerglwallpaper.rendering.objects.CenterGarland;
+import net.t106.sinkerglwallpaper.rendering.objects.BackgroundGarland;
 import net.t106.sinkerglwallpaper.rendering.filters.LeftFilter;
 import net.t106.sinkerglwallpaper.rendering.filters.RightFilter;
 import net.t106.sinkerglwallpaper.opengl.utils.MatrixUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
 
-public class SinkerService extends GLWallpaperServiceES32{
+public class AThingLeftBehindService extends GLWallpaperServiceES32{
 	public static int[] textures = new int[2];
 	public static int blend_type;
 	public static int[] col = new int[4];
@@ -33,7 +33,7 @@ public class SinkerService extends GLWallpaperServiceES32{
 		return context;
 	}
 	
-	public class SinkerEngine extends GLWallpaperServiceES32.GLEngine{
+	public class AThingLeftBehindEngine extends GLWallpaperServiceES32.GLEngine{
 		
 		@Override
 	    public void onCreate(SurfaceHolder surfaceHolder) {
@@ -45,8 +45,8 @@ public class SinkerService extends GLWallpaperServiceES32{
 	}
 	
 	public class MyRenderer implements GLWallpaperServiceES32.Renderer {
-		private CenterGraveyard cgy;
-		private BackgroundGraveyard bgy;
+		private CenterGarland cgy;
+		private BackgroundGarland bgy;
 		private RightFilter rf;
 		private LeftFilter lf;
 		
@@ -57,8 +57,8 @@ public class SinkerService extends GLWallpaperServiceES32{
 		
 		public MyRenderer()
 		{   
-			cgy = new CenterGraveyard();
-			bgy = new BackgroundGraveyard();
+			cgy = new CenterGarland();
+			bgy = new BackgroundGarland();
 			rf = new RightFilter();
 			lf = new LeftFilter();
 			
@@ -86,7 +86,7 @@ public class SinkerService extends GLWallpaperServiceES32{
 			lf.Update(deltaTime);
 			rf.Update(deltaTime);
 			
-			// Draw objects - filters first, then graveyards
+			// Draw objects - filters first, then garlands
 			bgy.Draw(viewMatrix, projectionMatrix);
 			cgy.Draw(viewMatrix, projectionMatrix);
 			lf.Draw(viewMatrix, projectionMatrix);
@@ -182,9 +182,9 @@ public class SinkerService extends GLWallpaperServiceES32{
 			if (newTextures != null) {
 				textures[0] = newTextures[0]; // Original texture
 				textures[1] = newTextures[1]; // Flipped texture
-				android.util.Log.d("SinkerService", "Textures loaded: " + textures[0] + ", " + textures[1]);
+				android.util.Log.d("AThingLeftBehindService", "Textures loaded: " + textures[0] + ", " + textures[1]);
 			} else {
-				android.util.Log.e("SinkerService", "Failed to load textures!");
+				android.util.Log.e("AThingLeftBehindService", "Failed to load textures!");
 			}
 			
 			// Set background color
@@ -202,7 +202,7 @@ public class SinkerService extends GLWallpaperServiceES32{
 	public Engine onCreateEngine()
 	{
 		context = this;
-		return new SinkerEngine();
+		return new AThingLeftBehindEngine();
 	}
 	
 	//頂点の配列をバッファーに変換するメソッド

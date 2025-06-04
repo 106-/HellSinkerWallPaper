@@ -8,18 +8,18 @@ import net.t106.sinkerglwallpaper.opengl.utils.ShaderUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.BufferUtils;
 import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
 import net.t106.sinkerglwallpaper.opengl.shaders.ShaderLoader;
-import net.t106.sinkerglwallpaper.rendering.services.SinkerService;
+import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 
 /**
- * Unified rotating graveyard object for OpenGL ES 3.2
- * Replaces both CenterGraveyard and BackgroundGraveyard with configuration-driven behavior
+ * Unified rotating garland object for OpenGL ES 3.2
+ * Replaces both CenterGarland and BackgroundGarland with configuration-driven behavior
  */
-public class RotatingGraveyard extends Graveyard {
+public class RotatingGarland extends Garland {
     
     private final RenderConfig.CompleteConfig config;
     private float rotation = 0.0f;
     
-    public RotatingGraveyard(RenderConfig.CompleteConfig config) {
+    public RotatingGarland(RenderConfig.CompleteConfig config) {
         super();
         this.config = config;
         
@@ -28,25 +28,25 @@ public class RotatingGraveyard extends Graveyard {
         coords = config.geometry.texCoords;
         
         // Keep legacy buffer creation for compatibility
-        ab = SinkerService.makeFloatBuffer(apex);
-        cb = SinkerService.makeFloatBuffer(coords);
+        ab = AThingLeftBehindService.makeFloatBuffer(apex);
+        cb = AThingLeftBehindService.makeFloatBuffer(coords);
     }
     
     /**
      * Factory methods for common configurations
      */
-    public static RotatingGraveyard createCenter() {
-        return new RotatingGraveyard(RenderConfig.CompleteConfig.CENTER_GRAVEYARD);
+    public static RotatingGarland createCenter() {
+        return new RotatingGarland(RenderConfig.CompleteConfig.CENTER_GARLAND);
     }
     
-    public static RotatingGraveyard createBackground() {
-        return new RotatingGraveyard(RenderConfig.CompleteConfig.BACKGROUND_GRAVEYARD);
+    public static RotatingGarland createBackground() {
+        return new RotatingGarland(RenderConfig.CompleteConfig.BACKGROUND_GARLAND);
     }
     
     @Override
     protected void createShaderProgram() {
         // Use blend shader program for texture rendering with color tinting
-        shaderProgram = ShaderLoader.Programs.createBlendProgram(SinkerService.getContext());
+        shaderProgram = ShaderLoader.Programs.createBlendProgram(AThingLeftBehindService.getContext());
     }
     
     @Override
@@ -59,7 +59,7 @@ public class RotatingGraveyard extends Graveyard {
         
         // Set texture if enabled
         if (config.texture.useTexture) {
-            TextureUtils.bindTexture(0, SinkerService.textures[config.texture.textureIndex]);
+            TextureUtils.bindTexture(0, AThingLeftBehindService.textures[config.texture.textureIndex]);
         }
         ShaderUtils.setUniform1i(textureLocation, 0);
         
@@ -118,9 +118,9 @@ public class RotatingGraveyard extends Graveyard {
     }
     
     /**
-     * Creates a custom rotating graveyard with specific parameters
+     * Creates a custom rotating garland with specific parameters
      */
-    public static RotatingGraveyard createCustom(
+    public static RotatingGarland createCustom(
             float rotationSpeed, 
             int maxCount, 
             boolean clockwise,
@@ -141,6 +141,6 @@ public class RotatingGraveyard extends Graveyard {
         RenderConfig.CompleteConfig config = new RenderConfig.CompleteConfig(
             rotation, color, texture, geometry, BlendModeManager.BLEND_ADDITIVE);
             
-        return new RotatingGraveyard(config);
+        return new RotatingGarland(config);
     }
 }
