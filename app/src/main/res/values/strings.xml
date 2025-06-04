@@ -3,7 +3,7 @@
     <string name="app_name">A THING LEFT BEHIND</string>
     <string name="reference">所詮　他愛ない模倣か…</string>
     <string name="name">A THING LEFT BEHIND</string>
-    <string name="about">\t^._.^ &lt;にゃーん\n\n\tW A R N I N G\n\n\tAN AWESOME PRAYER\n\tIS\n\tCONFLICT WITH US\n\n&lt;-ABOUT-&gt;\nHellSinker.のメニュー画面、「A THING LEFT BEHIND」を模倣したライブ壁紙です。\n\n&lt;-HOW TO-&gt;\n初期状態でもそれっぽくは表示されてますが、多分微妙に色が違っています。\nメニューからは「合成方法」と「色」を変更出来ますので、好きに使ってください。</string>
+    <string name="about">\t^._.^ &lt;にゃーん\n\n\tW A R N I N G\n\n\tAN AWESOME PRAYER\n\tIS\n\tCONFLICT WITH US\n\n&lt;-ABOUT-&gt;\nHellSinker.のメニュー画面、「A THING LEFT BEHIND」を模倣したライブ壁紙です。</string>
     <string name="color_value_placeholder">0.00</string>
     <string name="color_description">上からR,G,B,Alpha(透明度)</string>
     <string name="alpha_description">透明度はアルファ合成のみ有効</string>

@@ -133,7 +133,7 @@ public abstract class Garland {
 	public abstract void Update(float deltaTime);
 	
 	// Optional method for size changes
-	public void sizechange(boolean smollflg) {
+	public void sizechange(boolean smallflg) {
 		// Default implementation does nothing
 		// Subclasses can override if needed
 	}

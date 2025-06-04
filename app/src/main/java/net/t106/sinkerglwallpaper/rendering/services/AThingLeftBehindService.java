@@ -24,8 +24,6 @@ import net.t106.sinkerglwallpaper.opengl.utils.TextureUtils;
 
 public class AThingLeftBehindService extends GLWallpaperServiceES32{
 	public static int[] textures = new int[2];
-	public static int blend_type;
-	public static int[] col = new int[4];
 	private static Context context = null;
 	
 	// Static method to provide context to other classes
@@ -142,30 +140,11 @@ public class AThingLeftBehindService extends GLWallpaperServiceES32{
 			if(context != null)
 			{
 				SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-				String type = sp.getString("blend_type", "mul");
-				if(type.equals("add"))			blend_type = 0;
-				else if(type.equals("mul"))		blend_type = 1;
-				else if(type.equals("alpha"))	blend_type = 2;
-				else if(type.equals("xor"))		blend_type = 3;
-				col[0] = sp.getInt("col_R", 50);
-				col[1] = sp.getInt("col_G", 50);
-				col[2] = sp.getInt("col_B", 100);
-				col[3] = sp.getInt("col_Alpha", 50);
-				String Isvert = sp.getString("filter_size", "smoll");
-				if(Isvert.equals("smoll"))
-				{
-					lf.sizechange(true);
-					rf.sizechange(true);
-				}
-				else if(Isvert.equals("big"))
-				{
-					lf.sizechange(false);
-					rf.sizechange(false);
-				}
-				int gr_size = sp.getInt("size", 200);
-				
-				// Create view matrix using modern approach
-				float cameraZ = (gr_size + 100) / 100.0f;
+				// Filter size is fixed to small (true)
+				lf.sizechange(true);
+				rf.sizechange(true);
+				// Garland size is fixed to 4.0
+				float cameraZ = 4.0f;
 				viewMatrix = MatrixUtils.lookAt(0, 0, cameraZ, 0, 0, 0, 0, 1, 0);
 			}
 		}

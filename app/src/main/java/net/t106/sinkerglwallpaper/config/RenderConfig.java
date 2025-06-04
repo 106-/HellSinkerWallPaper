@@ -48,17 +48,6 @@ public class RenderConfig {
         public static final ColorConfig REDDISH_BROWN = new ColorConfig(0.375f, 0.04f, 0.09f, 0.5f);
         public static final ColorConfig PINKISH = new ColorConfig(1.0f, 0.5f, 0.5f, 0.5f);
         
-        /**
-         * Creates a color config from user settings (0-100 range)
-         */
-        public static ColorConfig fromUserSettings(int[] col) {
-            return new ColorConfig(
-                col[0] / 100.0f,
-                col[1] / 100.0f,
-                col[2] / 100.0f,
-                col[3] / 100.0f
-            );
-        }
     }
     
     /**

@@ -59,12 +59,12 @@ public class LeftFilter extends Garland {
 	}
 	
 	@Override
-	public void sizechange(boolean smollflg)
+	public void sizechange(boolean smallflg)
 	{
-		isSmallSize = smollflg;
+		isSmallSize = smallflg;
 		
 		// Update vertex data based on size
-		if(smollflg) {
+		if(smallflg) {
 			apex = new float[] { -0.5f, -1.5f, 0.0f, -1.5f, -0.5f, 1.5f, 0.0f, 1.5f, };
 		} else {
 			apex = new float[] { -0.7f, -1.5f, 0.7f, -1.5f, -0.7f, 1.5f, 0.7f, 1.5f, };
