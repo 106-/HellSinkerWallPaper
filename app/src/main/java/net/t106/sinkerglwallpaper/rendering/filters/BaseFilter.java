@@ -103,11 +103,11 @@ public abstract class BaseFilter extends Garland {
     }
     
     @Override
-    public void sizechange(boolean smollflg) {
-        isSmallSize = smollflg;
+    public void sizechange(boolean smallflg) {
+        isSmallSize = smallflg;
         
         // Update geometry based on size
-        geometryConfig = getGeometryForSize(smollflg);
+        geometryConfig = getGeometryForSize(smallflg);
         apex = geometryConfig.vertices;
         
         // Update buffer

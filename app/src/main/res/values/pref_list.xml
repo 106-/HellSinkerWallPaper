@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string-array name="blend_type">
-        <item >加算合成</item>
-        <item>乗算合成</item>
-        <item >アルファ合成</item>
-        <item >排他的論理和合成</item>
-    </string-array>
-    
-    <string-array name="blend_type_value">
-        <item >add</item>
-        <item>mul</item>
-        <item >alpha</item>
-        <item >xor</item>
-    </string-array>
-    <string-array name="filter_size">
-        <item >大(原作に忠実)</item>
-        <item >小(デフォルト)</item>
-    </string-array>
-    <string-array name="filter_size_value">
-        <item >big</item>
-        <item >smoll</item>
-    </string-array>
     
 </resources>
