@@ -15,14 +15,15 @@ import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 public class CenterGarland extends Garland {
 
 	private float rotation = 0.0f;
-	private static final float ROTATION_SPEED = -0.125f;
-	private static final int MAX_COUNT = 2881;
+	private float tickRemainder = 0.0f;
+	private static final int PERIOD_TICKS = 2880;
+	private static final float DISPLAY_SCALE = 0.566f;
 
 	public CenterGarland()
 	{
 		super();
-		// Define quad vertices (same as original)
-		apex = new float[] { -1f, -1f, 1f, -1f, -1f, 1f, 1f, 1f, };
+		// The original source rectangle is 512 x 512 around (320, 240).
+		apex = new float[] { -256f, -256f, 256f, -256f, -256f, 256f, 256f, 256f, };
 		coords = new float[] {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };
 		
 		// Keep legacy buffer creation for compatibility
@@ -32,7 +33,7 @@ public class CenterGarland extends Garland {
 	
 	@Override
 	protected void createShaderProgram() {
-		// Use blend shader program for additive blending
+		// The shader turns the grayscale m_car3_al mask into sprite alpha.
 		shaderProgram = ShaderLoader.Programs.createBlendProgram(AThingLeftBehindService.getContext());
 	}
 	
@@ -63,16 +64,16 @@ public class CenterGarland extends Garland {
 		// Set texture
 		TextureUtils.bindTexture(0, AThingLeftBehindService.textures[0]);
 		
-		// Set blend mode to additive (0) for beautiful color effects
-		ShaderUtils.setUniform1i(blendModeLocation, 0);
+		ShaderUtils.setUniform1i(blendModeLocation, 2);
 		
-		// Set color (white for no tinting)
-		ShaderUtils.setUniform4f(colorLocation, 0.37f, 1.0f, 1.0f, 1.0f);
+		// Original ARGB tint: 0xff40c0ff.
+		ShaderUtils.setUniform4f(colorLocation, 64.0f / 255.0f,
+			192.0f / 255.0f, 1.0f, 1.0f);
 		
-		// Use additive blending for glowing effects
+		// The Direct3D fixed-function path uses ordinary source-alpha blending.
 		GLES32.glEnable(GLES32.GL_BLEND);
-		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
-//		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
+		GLES32.glBlendEquation(GLES32.GL_FUNC_ADD);
+		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
 
 		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
@@ -88,14 +89,17 @@ public class CenterGarland extends Garland {
 
 	@Override
 	public void Update(float deltaTime) {
-		// Update rotation counter
-		cnt++;
-		if(cnt >= MAX_COUNT) cnt = 0;
+		tickRemainder += Math.max(0.0f, deltaTime) * 60.0f;
+		int elapsedTicks = (int)tickRemainder;
+		tickRemainder -= elapsedTicks;
+		cnt = (cnt + elapsedTicks) % PERIOD_TICKS;
 		
-		// Calculate rotation angle
-		rotation = ROTATION_SPEED * cnt;
-		
-		// Update model matrix with rotation
-		modelMatrix = MatrixUtils.rotateZ(rotation);
+		// Positive D3D rotation appears clockwise because its Y axis points down.
+		// OpenGL's Y axis points up, hence the negative angle here.
+		rotation = -360.0f * cnt / PERIOD_TICKS;
+		// Match the apparent size of the previous perspective-projection version.
+		modelMatrix = MatrixUtils.multiply(
+			MatrixUtils.rotateZ(rotation),
+			MatrixUtils.scale(DISPLAY_SCALE, DISPLAY_SCALE, 1.0f));
 	}
 }
