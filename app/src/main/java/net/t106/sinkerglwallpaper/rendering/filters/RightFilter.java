@@ -47,6 +47,7 @@ public class RightFilter extends Garland {
 
 		// With an opaque white source this is exactly 1 - destination RGB:
 		// S * (1 - D) + D * (1 - S).
+		ShaderUtils.setUniform1i(blendModeLocation, 0);
 		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 		GLES32.glBlendEquation(GLES32.GL_FUNC_ADD);
 		GLES32.glBlendFuncSeparate(

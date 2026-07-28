@@ -9,4 +9,5 @@
     <string name="alpha_description">透明度はアルファ合成のみ有効</string>
     <string name="reset_to_default">デフォルトに戻す</string>
     <string name="size_description">値が大きいほど小さくなります</string>
+    <string name="background_type_title">メニュー背景</string>
 </resources>

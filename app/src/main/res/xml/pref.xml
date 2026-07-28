@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-   	<net.t106.sinkerglwallpaper.ui.preferences.TextBoxPreference android:title="概要と手引き" android:key="textbox_pref"/>
+	<ListPreference
+		android:key="background_type"
+		android:title="@string/background_type_title"
+		android:entries="@array/menu_background_entries"
+		android:entryValues="@array/menu_background_values"
+		android:defaultValue="left_behind"
+		android:dialogTitle="@string/background_type_title"/>
+	<net.t106.sinkerglwallpaper.ui.preferences.TextBoxPreference android:title="概要と手引き" android:key="textbox_pref"/>
 </PreferenceScreen>

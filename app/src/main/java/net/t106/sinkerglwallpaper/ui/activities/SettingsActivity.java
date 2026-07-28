@@ -2,6 +2,7 @@ package net.t106.sinkerglwallpaper.ui.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import net.t106.sinkerglwallpaper.R;
 import net.t106.sinkerglwallpaper.ui.preferences.TextBoxPreference;
@@ -30,6 +31,12 @@ public class SettingsActivity extends AppCompatActivity {
 		@Override
 		public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 			setPreferencesFromResource(R.xml.pref, rootKey);
+			ListPreference backgroundPreference =
+				findPreference("background_type");
+			if (backgroundPreference != null) {
+				backgroundPreference.setSummaryProvider(
+					ListPreference.SimpleSummaryProvider.getInstance());
+			}
 		}
 		
 		@Override
