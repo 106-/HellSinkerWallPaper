@@ -22,6 +22,12 @@ public class MatrixUtils {
         Matrix.perspectiveM(matrix, 0, fovY, aspect, zNear, zFar);
         return matrix;
     }
+
+    public static float[] orthographic(float left, float right, float bottom, float top) {
+        float[] matrix = new float[16];
+        Matrix.orthoM(matrix, 0, left, right, bottom, top, -1.0f, 1.0f);
+        return matrix;
+    }
     
     /**
      * Creates a look-at view matrix (replaces GLU.gluLookAt)

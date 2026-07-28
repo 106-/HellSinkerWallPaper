@@ -15,14 +15,15 @@ import net.t106.sinkerglwallpaper.rendering.services.AThingLeftBehindService;
 public class BackgroundGarland extends Garland {
 	
 	private float rotation = 0.0f;
-	private static final float ROTATION_SPEED = 0.125f;  // Positive rotation (opposite to center)
-	private static final int MAX_COUNT = 2880;
+	private float tickRemainder = 0.0f;
+	private static final int PERIOD_TICKS = 1920;
+	private static final float DISPLAY_SCALE = 0.566f;
 	
 	public BackgroundGarland()
 	{
 		super();
-		// Larger quad vertices (1.5x scale compared to CenterGarland)
-		apex = new float[] { -1.5f, -1.5f, 1.5f, -1.5f, -1.5f, 1.5f, 1.5f, 1.5f, };
+		// 512 x 512 source at 1.5 scale.
+		apex = new float[] { -384f, -384f, 384f, -384f, -384f, 384f, 384f, 384f, };
 		coords = new float[] {0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };
 		
 		// Keep legacy buffer creation for compatibility
@@ -32,7 +33,7 @@ public class BackgroundGarland extends Garland {
 
 	@Override
 	protected void createShaderProgram() {
-		// Use blend shader program for additive blending with color tint
+		// The shader turns the grayscale m_car3_al mask into sprite alpha.
 		shaderProgram = ShaderLoader.Programs.createBlendProgram(AThingLeftBehindService.getContext());
 	}
 
@@ -44,18 +45,17 @@ public class BackgroundGarland extends Garland {
 		// Bind shader and set uniforms
 		bindShader();
 		
-		// Set texture (using flipped texture)
-		TextureUtils.bindTexture(0, AThingLeftBehindService.textures[1]);
+		TextureUtils.bindTexture(0, AThingLeftBehindService.textures[0]);
 		
-		// Set blend mode to additive (0)
-		ShaderUtils.setUniform1i(blendModeLocation, 0);
+		ShaderUtils.setUniform1i(blendModeLocation, 2);
 		
-		// Set color tint (reddish-brown tint)
-		ShaderUtils.setUniform4f(colorLocation, 0.375f, 0.04f, 0.09f, 1.0f);
+		// Original ARGB tint: 0xff400810.
+		ShaderUtils.setUniform4f(colorLocation, 64.0f / 255.0f,
+			8.0f / 255.0f, 16.0f / 255.0f, 1.0f);
 		
-		// Enable blending for additive effect
 		GLES32.glEnable(GLES32.GL_BLEND);
-		GLES32.glBlendFunc(GLES32.GL_ONE, GLES32.GL_ONE);
+		GLES32.glBlendEquation(GLES32.GL_FUNC_ADD);
+		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
 		
 		// Bind VAO and draw
 		BufferUtils.bindVAO(vao);
@@ -71,14 +71,16 @@ public class BackgroundGarland extends Garland {
 
 	@Override
 	public void Update(float deltaTime) {
-		// Update rotation counter
-		cnt++;
-		if(cnt >= MAX_COUNT) cnt = 0;
+		tickRemainder += Math.max(0.0f, deltaTime) * 60.0f;
+		int elapsedTicks = (int)tickRemainder;
+		tickRemainder -= elapsedTicks;
+		cnt = (cnt + elapsedTicks) % PERIOD_TICKS;
 		
-		// Calculate rotation angle (positive direction)
-		rotation = ROTATION_SPEED * cnt;
-		
-		// Update model matrix with rotation
-		modelMatrix = MatrixUtils.rotateZ(rotation);
+		// Equivalent to -(1919 - (t mod 1920)) / 1920 D3D turns,
+		// modulo one turn, then vertically mirrored as scaleY = -1.5.
+		rotation = 360.0f * (cnt + 1) / PERIOD_TICKS;
+		modelMatrix = MatrixUtils.multiply(
+			MatrixUtils.rotateZ(rotation),
+			MatrixUtils.scale(DISPLAY_SCALE, -DISPLAY_SCALE, 1.0f));
 	}
 }

@@ -8,23 +8,19 @@ import net.t106.sinkerglwallpaper.rendering.objects.Garland;
 
 /**
  * Right side filter for OpenGL ES 3.2
- * Renders a vertical colored strip on the right side with invert blend mode
+ * Inverts the right half after both sprite layers have been drawn.
  */
 public class RightFilter extends Garland {
 
-	private boolean isSmallSize = false;
-	
-	// Filter color (pinkish)
-	private static final float RED = 1.0f;
-	private static final float GREEN = 0.5f;
-	private static final float BLUE = 0.5f;
-	private static final float ALPHA = 0.5f;
+	private static final float FILTER_WIDTH = 72.45f;
 
 	public RightFilter()
 	{
 		super();
-		// Right side vertical strip (default size)
-		apex = new float[] { 0f, -2.5f, 0.7f, -2.5f, 0f, 2.5f, 0.7f, 2.5f, };
+		apex = new float[] {
+			0f, -240f, FILTER_WIDTH, -240f,
+			0f, 240f, FILTER_WIDTH, 240f,
+		};
 		// No texture coordinates needed for color-only rendering
 		coords = new float[] { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f };
 		
@@ -49,14 +45,13 @@ public class RightFilter extends Garland {
 
 		GLES32.glEnable(GLES32.GL_BLEND);
 
-		ShaderUtils.setUniform4f(colorLocation, 0.2f, 0.4f, 0.60f, 0.4f);
-		GLES32.glBlendFunc(GLES32.GL_ZERO, GLES32.GL_SRC_COLOR);
-		BufferUtils.bindVAO(vao);
-		BufferUtils.drawQuad();
-		BufferUtils.unbindVAO();
-
-		ShaderUtils.setUniform4f(colorLocation, 0.85f, 0.85f, 0.85f, 1.00f);
-		GLES32.glBlendFunc(GLES32.GL_ONE_MINUS_DST_COLOR, GLES32.GL_ZERO);
+		// With an opaque white source this is exactly 1 - destination RGB:
+		// S * (1 - D) + D * (1 - S).
+		ShaderUtils.setUniform4f(colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+		GLES32.glBlendEquation(GLES32.GL_FUNC_ADD);
+		GLES32.glBlendFuncSeparate(
+			GLES32.GL_ONE_MINUS_DST_COLOR, GLES32.GL_ONE_MINUS_SRC_COLOR,
+			GLES32.GL_ONE, GLES32.GL_ZERO);
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
 		BufferUtils.unbindVAO();
@@ -73,15 +68,16 @@ public class RightFilter extends Garland {
 	@Override
 	public void sizechange(boolean smallflg)
 	{
-		isSmallSize = smallflg;
-		
-		// Update vertex data based on size
-		if(smallflg) {
-			apex = new float[] { 0f, -1.5f, 0.5f, -1.5f, 0f, 1.5f, 0.5f, 1.5f, };
-		} else {
-			apex = new float[] { 0f, -1.5f, 0.7f, -1.5f, 0f, 1.5f, 0.7f, 1.5f, };
-		}
-		
+		// The viewport dimensions are supplied by setViewport().
+	}
+
+	public void setViewport(float halfWidth, float halfHeight)
+	{
+		float width = Math.min(FILTER_WIDTH, halfWidth);
+		apex = new float[] {
+			0f, -halfHeight, width, -halfHeight,
+			0f, halfHeight, width, halfHeight,
+		};
 		// Update buffer
 		ab = AThingLeftBehindService.makeFloatBuffer(apex);
 		
