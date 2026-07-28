@@ -77,5 +77,10 @@ public class ShaderLoader {
         public static int createColorProgram(Context context) {
             return createProgramFromAssets(context, "basic_vertex.glsl", "color_fragment.glsl");
         }
+
+        public static int createMenuSpriteProgram(Context context) {
+            return createProgramFromAssets(
+                context, "basic_vertex.glsl", "menu_sprite_fragment.glsl");
+        }
     }
 }

@@ -5,13 +5,14 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.opengl.GLES32;
 import android.os.SystemClock;
 import android.view.SurfaceHolder;
+import androidx.preference.PreferenceManager;
 import net.rbgrn.android.glwallpaperservice.GLWallpaperServiceES32;
-import net.t106.sinkerglwallpaper.R;
-import net.t106.sinkerglwallpaper.rendering.objects.CenterGarland;
-import net.t106.sinkerglwallpaper.rendering.objects.BackgroundGarland;
+import net.t106.sinkerglwallpaper.rendering.backgrounds.MenuBackgroundProfile;
+import net.t106.sinkerglwallpaper.rendering.backgrounds.MenuSpriteRenderer;
 import net.t106.sinkerglwallpaper.rendering.filters.LeftFilter;
 import net.t106.sinkerglwallpaper.rendering.filters.OuterBrightnessFilter;
 import net.t106.sinkerglwallpaper.rendering.filters.RightFilter;
@@ -37,10 +38,12 @@ public class AThingLeftBehindService extends GLWallpaperServiceES32{
 		}       
 		
 	}
-	
+
 	public class MyRenderer implements GLWallpaperServiceES32.Renderer {
-		private CenterGarland cgy;
-		private BackgroundGarland bgy;
+		private final MenuSpriteRenderer spriteRenderer;
+		private final MenuSpriteRenderer.SpriteState[] spriteStates;
+		private final int[][] menuTextures;
+		private final SharedPreferences preferences;
 		private RightFilter rf;
 		private LeftFilter lf;
 		private OuterBrightnessFilter outerBrightnessFilter;
@@ -49,11 +52,19 @@ public class AThingLeftBehindService extends GLWallpaperServiceES32{
 		private float[] projectionMatrix;
 		private float[] viewMatrix;
 		private long lastTimeNanos;
-		
+		private long animationTick;
+		private float tickRemainder;
+
 		public MyRenderer()
-		{   
-			cgy = new CenterGarland();
-			bgy = new BackgroundGarland();
+		{
+			spriteRenderer = new MenuSpriteRenderer();
+			spriteStates = new MenuSpriteRenderer.SpriteState[] {
+				new MenuSpriteRenderer.SpriteState(),
+				new MenuSpriteRenderer.SpriteState(),
+				new MenuSpriteRenderer.SpriteState(),
+			};
+			menuTextures = new int[MenuBackgroundProfile.values().length][2];
+			preferences = PreferenceManager.getDefaultSharedPreferences(context);
 			rf = new RightFilter();
 			lf = new LeftFilter();
 			outerBrightnessFilter = new OuterBrightnessFilter();
@@ -76,23 +87,39 @@ public class AThingLeftBehindService extends GLWallpaperServiceES32{
 			float deltaTime = lastTimeNanos == 0L ? 0.0f
 				: (currentTimeNanos - lastTimeNanos) / 1_000_000_000.0f;
 			lastTimeNanos = currentTimeNanos;
-			
-			// Update objects
-			bgy.Update(deltaTime);
-			cgy.Update(deltaTime);
-			lf.Update(deltaTime);
-			rf.Update(deltaTime);
-			outerBrightnessFilter.Update(deltaTime);
-			
-			// Original sort order: opaque center plate, dark layer, cyan layer,
-			// right-half inversion, then gray over the full center band.
-			lf.DrawBase(viewMatrix, projectionMatrix);
-			bgy.Draw(viewMatrix, projectionMatrix);
-			cgy.Draw(viewMatrix, projectionMatrix);
-			rf.Draw(viewMatrix, projectionMatrix);
-			lf.Draw(viewMatrix, projectionMatrix);
+
+			tickRemainder += Math.max(0.0f, deltaTime) * 60.0f;
+			long elapsedTicks = (long)tickRemainder;
+			tickRemainder -= elapsedTicks;
+			animationTick += elapsedTicks;
+
+			MenuBackgroundProfile profile = MenuBackgroundProfile.fromPreference(
+				preferences.getString(
+					MenuBackgroundProfile.PREFERENCE_KEY,
+					MenuBackgroundProfile.DEFAULT_VALUE));
+			profile.configureSprites(animationTick, spriteStates);
+
+			// The sort-key order recovered from the game is: opaque base,
+			// sprite layers, optional right-half inversion, optional gray pass.
+			lf.DrawBase(viewMatrix, projectionMatrix, profile.baseColor);
+			int[] profileTextures = menuTextures[profile.ordinal()];
+			for (int i = 0; i < profile.spriteCount; i++) {
+				spriteRenderer.draw(
+					viewMatrix,
+					projectionMatrix,
+					profileTextures[0],
+					profileTextures[1],
+					spriteStates[i]);
+			}
+			if (profile.invertRightHalf) {
+				rf.Draw(viewMatrix, projectionMatrix);
+			}
+			if (profile.overlayColor != 0) {
+				lf.DrawOverlay(
+					viewMatrix, projectionMatrix, profile.overlayColor);
+			}
 			// The menu/HUD queue brightens only the two areas outside the
-			// existing center band after all background layers are composited.
+			// existing center band, equally for all four background choices.
 			outerBrightnessFilter.Draw(viewMatrix, projectionMatrix);
 		}
 		
@@ -129,28 +156,36 @@ public class AThingLeftBehindService extends GLWallpaperServiceES32{
 		
 		@Override
 		public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl, javax.microedition.khronos.egl.EGLConfig arg1) {
-			// Delete old textures if they exist
-			if (textures[0] != 0) {
-				TextureUtils.deleteTexture(textures[0]);
-				textures[0] = 0;
+			for (int[] pair : menuTextures) {
+				for (int i = 0; i < pair.length; i++) {
+					if (pair[i] != 0) {
+						TextureUtils.deleteTexture(pair[i]);
+						pair[i] = 0;
+					}
+				}
 			}
-			
-			textures[0] = TextureUtils.loadTexture(context, R.drawable.gr);
-			if (textures[0] == 0) {
-				android.util.Log.e("AThingLeftBehindService", "Failed to load textures!");
-			} else {
-				android.util.Log.d("AThingLeftBehindService", "Texture loaded: " + textures[0]);
+
+			for (MenuBackgroundProfile profile : MenuBackgroundProfile.values()) {
+				int[] pair = menuTextures[profile.ordinal()];
+				pair[0] = TextureUtils.loadTexture(context, profile.rgbResource);
+				pair[1] = TextureUtils.loadTexture(context, profile.alphaResource);
+				if (pair[0] == 0 || pair[1] == 0) {
+					android.util.Log.e(
+						"AThingLeftBehindService",
+						"Failed to load textures for " + profile.name());
+				}
 			}
-			
+
 			// The original render target is black outside the center band.
 			GLES32.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			GLES32.glDisable(GLES32.GL_DEPTH_TEST);
 			GLES32.glDisable(GLES32.GL_CULL_FACE);
 			lastTimeNanos = 0L;
-			
+			animationTick = 0L;
+			tickRemainder = 0.0f;
+
 			// Initialize all rendering objects
-			bgy.initGL();
-			cgy.initGL();
+			spriteRenderer.initGL(context);
 			lf.initGL();
 			rf.initGL();
 			outerBrightnessFilter.initGL();

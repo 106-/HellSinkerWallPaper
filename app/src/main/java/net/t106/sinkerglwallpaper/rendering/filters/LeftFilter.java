@@ -38,12 +38,17 @@ public class LeftFilter extends Garland {
 	 * key 20: opaque #401060 plate behind both sprite layers.
 	 */
 	public void DrawBase(float[] viewMatrix, float[] projectionMatrix) {
+		DrawBase(viewMatrix, projectionMatrix, 0xFF401060);
+	}
+
+	public void DrawBase(
+		float[] viewMatrix, float[] projectionMatrix, int argb) {
 		updateMVP(viewMatrix, projectionMatrix);
 		bindShader();
 
 		GLES32.glDisable(GLES32.GL_BLEND);
-		ShaderUtils.setUniform4f(colorLocation, 64.0f / 255.0f,
-			16.0f / 255.0f, 96.0f / 255.0f, 1.0f);
+		ShaderUtils.setUniform1i(blendModeLocation, 0);
+		setColor(argb);
 
 		BufferUtils.bindVAO(vao);
 		BufferUtils.drawQuad();
@@ -52,7 +57,11 @@ public class LeftFilter extends Garland {
 
 	@Override
 	public void Draw(float[] viewMatrix, float[] projectionMatrix) {
+		DrawOverlay(viewMatrix, projectionMatrix, 0x40606060);
+	}
 
+	public void DrawOverlay(
+		float[] viewMatrix, float[] projectionMatrix, int argb) {
 		// Update MVP matrix (no rotation, just basic transformation)
 		updateMVP(viewMatrix, projectionMatrix);
 
@@ -61,9 +70,8 @@ public class LeftFilter extends Garland {
 
 		GLES32.glEnable(GLES32.GL_BLEND);
 
-		// Original overlay: 0x40606060.
-		ShaderUtils.setUniform4f(colorLocation, 96.0f / 255.0f,
-			96.0f / 255.0f, 96.0f / 255.0f, 64.0f / 255.0f);
+		ShaderUtils.setUniform1i(blendModeLocation, 0);
+		setColor(argb);
 		GLES32.glBlendEquation(GLES32.GL_FUNC_ADD);
 		GLES32.glBlendFunc(GLES32.GL_SRC_ALPHA, GLES32.GL_ONE_MINUS_SRC_ALPHA);
 		BufferUtils.bindVAO(vao);
@@ -71,6 +79,15 @@ public class LeftFilter extends Garland {
 		BufferUtils.unbindVAO();
 
 		GLES32.glDisable(GLES32.GL_BLEND);
+	}
+
+	private void setColor(int argb) {
+		ShaderUtils.setUniform4f(
+			colorLocation,
+			((argb >> 16) & 0xFF) / 255.0f,
+			((argb >> 8) & 0xFF) / 255.0f,
+			(argb & 0xFF) / 255.0f,
+			((argb >>> 24) & 0xFF) / 255.0f);
 	}
 
 	@Override

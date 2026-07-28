@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    
+    <string-array name="menu_background_entries">
+        <item>THE GRAVEYARD</item>
+        <item>DRIVING FACTOR</item>
+        <item>A THING LEFT BEHIND</item>
+        <item>MEMENTO</item>
+    </string-array>
+
+    <string-array name="menu_background_values">
+        <item>graveyard</item>
+        <item>driving_factor</item>
+        <item>left_behind</item>
+        <item>memento</item>
+    </string-array>
 </resources>
